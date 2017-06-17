@@ -17,7 +17,7 @@ dt.main = function () {
         maxRoomHeight: 6,
         maxTryTimes: 10
     };
-    var rooms = dt.mapgen.generateMapLevel(mapConfig, dt.global.context);
+    dt.mapgen.generateMapLevel(mapConfig, dt.global.context);
 };
 
 dt.main();

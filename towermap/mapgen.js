@@ -12,7 +12,8 @@ dt.mapgen = {
                 y: 0,
                 width: ctx.random.randomInt(mapConfig.minRoomWidth, mapConfig.maxRoomWidth),
                 height: ctx.random.randomInt(mapConfig.minRoomHeight, mapConfig.maxRoomHeight),
-                offsets: []
+                offsets: [],
+                edges: []
             });
         }
 
@@ -30,11 +31,11 @@ dt.mapgen = {
         }
 
         dt.suger.print(roomsOk);
-        if (!roomsOk){
+        if (!roomsOk) {
             return undefined;
         }
 
-        //todo
+        var ways = this._connectAllRooms(mapConfig, rooms);
     },
 
     _scatterRooms: function (mapConfig, rooms) {
@@ -61,7 +62,7 @@ dt.mapgen = {
             }
         }
         for (var i = 0; i < len; i++) {
-            if (rooms[i].offsets.length == 0){
+            if (rooms[i].offsets.length == 0) {
                 continue;
             }
             var offset = {x: 0, y: 0};
@@ -128,6 +129,10 @@ dt.mapgen = {
                 this._phaseStep(srcCenterY, dstCenterY)
             ];
         }
+    },
+
+    _connectAllRooms: function (mapConfig, rooms) {
+
     },
 
     _phaseStep: function (x, y) {
