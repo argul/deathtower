@@ -28,10 +28,28 @@ dt.suger = {
         return ret;
     },
 
-    shuffle: function (arr) {
+    getKeys: function (obj) {
+        dt.debug.assert(dt.suger.isObject(obj));
+        var ret = [];
+        for (var key in obj){
+            if (!obj.hasOwnProperty(key)){
+                continue;
+            }
+            ret.push(key);
+        }
+        return ret;
+    },
+
+    repeat: function (f, times) {
+        for (var i = 0; i < times; i++) {
+            f();
+        }
+    },
+
+    shuffle: function (arr, ctx) {
         var len = arr.length;
         for (var i = 0; i < len - 1; i++) {
-            var idx = Math.floor(Math.random() * (len - i));
+            var idx = ctx.random.randomInt(0, len - i - 1);
             idx = (idx >= len) ? (len - 1) : idx;
             var temp = arr[idx];
             arr[idx] = arr[len - i - 1];
@@ -94,7 +112,7 @@ dt.suger = {
             }, obj);
         }
         else {
-            throw "e";
+            dt.debug.assert(false);
         }
         return ret;
     },
@@ -107,18 +125,14 @@ dt.suger = {
         };
 
         if (self.isObject(obj)) {
-            if (isPOD(obj)) {
-                destination = self.isUndefined(destination) ? {} : destination;
-            }
-            else {
-                throw "e";
-            }
+            dt.debug.assert(isPOD(obj));
+            destination = self.isUndefined(destination) ? {} : destination;
         }
         else if (self.isArray(obj)) {
             destination = self.isUndefined(destination) ? [] : destination;
         }
         else {
-            throw "e";
+            dt.debug.assert(false);
         }
 
         var keyFilter = (control && control.keyFilter) ? control.keyFilter : function () {
@@ -176,7 +190,15 @@ dt.functional = {
             this._foreachObj(procedure, any);
         }
         else {
-            throw "e";
+            dt.debug.assert(false);
+        }
+    },
+
+    for2DMatrix: function (procedure, matrix) {
+        for (var idx0 = 0; idx0 < matrix.length; idx0++) {
+            for (var idx1 = 0; idx1 < matrix[idx0].length; idx1++) {
+                procedure(idx0, idx1, matrix[idx0][idx1]);
+            }
         }
     },
 
@@ -200,7 +222,7 @@ dt.functional = {
 
     filter: function (procedure, arr) {
         var ret = [];
-        this.foreachArr(function (item, idx) {
+        this._foreachArr(function (item, idx) {
             if (procedure(item, idx)) {
                 ret.push(item);
             }

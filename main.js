@@ -5,18 +5,20 @@
 var dt = dt || {};
 
 dt.main = function () {
-    dt.global.context = new dt.Context(0);
+    dt.global.context = new dt.Context(5);
     var mapConfig = {
-        width: 20,
-        height: 20,
-        minRoomNumber: 6,
-        maxRoomNumber: 9,
-        minRoomWidth: 3,
-        maxRoomWidth: 6,
-        minRoomHeight: 3,
-        maxRoomHeight: 6,
-        maxTryTimes: 10
+        width: 31,
+        height: 31,
+        minRoomNumber: 7,
+        maxRoomNumber: 10,
+        minRoomWidth: 5,
+        maxRoomWidth: 11,
+        minRoomHeight: 5,
+        maxRoomHeight: 11,
+        scatterRoomTrys: 30,
+        doorNumProbability: [0.4, 0.4, 0.15, 0.05]
     };
+
     dt.mapgen.generateMapLevel(mapConfig, dt.global.context);
 };
 
