@@ -32,7 +32,7 @@ dt.debug = {
     },
 
     dumpAscIIMap: function (mapLevel) {
-        var asciiMap = dt.suger.shallowCopy(mapLevel);
+        var asciiMap = dt.suger.shallowCopy(mapLevel.tiles);
         asciiMap.reverse();
 
         dt.suger.print('==========================================');

@@ -1,17 +1,16 @@
 /**
  * Created by argulworm on 6/14/17.
  */
+dt.flushClassInheritance();
 
-var dt = dt || {};
-
-dt.test = function () {
-    dt.global.context = new dt.Context(0);
+dt.main = function () {
+    var ctx = new dt.Context(0);
     var mapConfig = {
-        width: 31,
-        height: 31,
+        width: 35,
+        height: 35,
         minRoomNumber: 7,
         maxRoomNumber: 10,
-        minRoomWidth: 5,
+        minRoomWidth: 7,
         maxRoomWidth: 11,
         minRoomHeight: 5,
         maxRoomHeight: 11,
@@ -19,9 +18,17 @@ dt.test = function () {
         doorNumProbability: [0.4, 0.4, 0.15, 0.05]
     };
 
-    var map = dt.mapgen.generateMapLevel(mapConfig, dt.global.context);
-    var stairs = dt.mapassemble.makeStairs(map.mapLevel, map.rooms, dt.global.context);
-    dt.debug.dumpAscIIMap(map.mapLevel);
+    var mapLevel = dt.mapgen.generateMapLevel(mapConfig, ctx);
+    var stairs = dt.mapassemble.makeStairs(mapLevel, ctx);
+    dt.debug.dumpAscIIMap(mapLevel);
+
+    // var ins = new dt.Abacus({
+    //     seed: 0,
+    //     mapConfig: mapConfig,
+    //     maxLevel: 20,
+    //     playerData: {},
+    //     userData: {}
+    // });
 };
 
-dt.test();
+dt.main();

@@ -3,13 +3,13 @@
  */
 
 dt.mapassemble = {
-    makeStairs: function (mapLevel, rooms, ctx) {
+    makeStairs: function (mapLevel, ctx) {
         var availList = [];
-        dt.functional.for2DMatrix(function (idx0, idx1, tile) {
+        mapLevel.foreachTile(function (x, y, tile) {
             if (tile == dt.mapconst.TILE_CORRIDOR) {
-                availList.push(idx1 * 10000 + idx0);
+                availList.push(x * 10000 + y);
             }
-        }, mapLevel);
+        });
         dt.functional.foreach(function (r) {
             for (var i = r.x + 1; i <= r.x + r.width - 2; i++) {
                 availList.push(i * 10000 + r.y + 1);
@@ -19,7 +19,7 @@ dt.mapassemble = {
                 availList.push((r.x + 1) * 10000 + i);
                 availList.push((r.x + r.width - 2) * 10000 + i);
             }
-        }, rooms);
+        }, mapLevel.getRooms());
         dt.debug.assert(availList.length >= 2);
         dt.suger.shuffle(availList, ctx);
         var up = {
@@ -30,8 +30,8 @@ dt.mapassemble = {
             x: Math.floor(availList[1] / 10000),
             y: availList[1] % 10000
         };
-        mapLevel[up.y][up.x] = dt.mapconst.TILE_STAIR_UPWARD;
-        mapLevel[down.y][down.x] = dt.mapconst.TILE_STAIR_DOWNWARD;
+        mapLevel.setTile(up.x, up.y, dt.mapconst.TILE_STAIR_UPWARD);
+        mapLevel.setTile(down.x, down.y, dt.mapconst.TILE_STAIR_DOWNWARD);
         return {
             up: up,
             down: down
