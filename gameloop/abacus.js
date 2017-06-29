@@ -10,12 +10,12 @@ dt.registerClassInheritance('dt.Class', function () {
             this.config.maxLevel = paramsPack.maxLevel;
 
             this.ctx = new dt.Context(paramsPack.seed);
-            var map = dt.mapgen.generateMapLevel(paramsPack.mapConfig, this.ctx);
-            var stairs = dt.mapassemble.makeStairs(map.mapLevel, map.rooms, this.ctx);
+            var mapLevel = dt.mapgen.generateMapLevel(paramsPack.mapConfig, this.ctx);
+            var stairs = dt.mapassemble.makeStairs(mapLevel, this.ctx);
 
             this.mapStat = {
-                level: 1,
-                curMap: map,
+                levelNum: 1,
+                mapLevel: mapLevel,
                 upstair: stairs.up,
                 downstair: stairs.down
             };
@@ -23,6 +23,9 @@ dt.registerClassInheritance('dt.Class', function () {
                 posX: stairs.down.x,
                 posY: stairs.down.y
             };
+            this.mapAI = new dt.PlayerMapAI(this);
+            this.mapExecutor = new dt.PlayerMapExecutor(this);
+            this.mapAI.reset();
         },
 
         tick: function () {

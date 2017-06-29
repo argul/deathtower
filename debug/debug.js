@@ -36,8 +36,8 @@ dt.debug = {
         asciiMap.reverse();
 
         dt.suger.print('==========================================');
-        dt.functional.foreach(function (line) {
-            line = dt.functional.map(function (x) {
+        asciiMap.forEach(function (line) {
+            line = line.map(function (x) {
                 switch (x) {
                     case dt.mapconst.TILE_WALL:
                         return '*';
@@ -52,9 +52,9 @@ dt.debug = {
                     default:
                         return x;
                 }
-            }, line);
+            });
             dt.suger.print(line.join(''));
-        }, asciiMap);
+        });
         dt.suger.print('==========================================');
     }
 };

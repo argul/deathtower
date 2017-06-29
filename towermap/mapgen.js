@@ -14,9 +14,9 @@ dt.mapgen = {
         }
 
         var rooms = this._genRooms(mapConfig, ctx);
-        dt.functional.foreach(function (r) {
+        rooms.forEach(function (r) {
             mapLevel.addRoom(r);
-        }, rooms);
+        });
 
         if (this._DEBUG_DETAIL) {
             dt.debug.verbose('only rooms');
@@ -62,7 +62,7 @@ dt.mapgen = {
                 }
                 else {
                     var r = {
-                        idx: i,
+                        roomId: i,
                         x: 0,
                         y: 0,
                         width: ctx.random.randomOdd(mapConfig.minRoomWidth, mapConfig.maxRoomWidth),
@@ -160,19 +160,19 @@ dt.mapgen = {
                 ret[i * 10000 + j] = true;
             }
         }
-        dt.functional.foreach(function (r) {
+        rooms.forEach(function (r) {
             for (var i = 1; i <= r.width - 2; i += 2) {
                 for (var j = 1; j <= r.height - 2; j += 2) {
                     delete ret[(r.x + i) * 10000 + (r.y + j)];
                 }
             }
-        }, rooms);
+        });
         return ret;
     },
 
     _openDoors: function (paramPack) {
         var self = this;
-        dt.functional.foreach(function (r) {
+        paramPack.mapLevel.getRooms().forEach(function (r) {
             var canBeDoors = [];
             if (r.y > 0) { //bottom walls
                 for (var i = 1; i < r.width - 1; i++) {
@@ -209,14 +209,14 @@ dt.mapgen = {
                 var doorY = canBeDoors[i].y;
                 paramPack.mapLevel.setTile(doorX, doorY, dt.mapconst.TILE_CORRIDOR);
             }
-        }, paramPack.mapLevel.getRooms());
+        });
     },
 
     _getDoorNumber: function (mapConfig, ctx) {
         var total = 0;
-        dt.functional.foreach(function (x) {
+        mapConfig.doorNumProbability.forEach(function (x) {
             total += x;
-        }, mapConfig.doorNumProbability);
+        });
         dt.debug.assert(Math.abs(total - 1.0) < 0.0001);
         var f = ctx.random.random01();
         for (var i = 0; i < mapConfig.doorNumProbability.length; i++) {
@@ -268,10 +268,10 @@ dt.mapgen = {
                     deadendList.push(todos[key]);
                 }
             }
-            dt.functional.foreach(function (element) {
+            deadendList.forEach(function (element) {
                 paramPack.mapLevel.setTile(element.x, element.y, dt.mapconst.TILE_WALL);
                 delete todos[element.x * 10000 + element.y];
-            }, deadendList);
+            });
         }
         while (deadendList.length > 0);
     }

@@ -10,7 +10,7 @@ dt.mapassemble = {
                 availList.push(x * 10000 + y);
             }
         });
-        dt.functional.foreach(function (r) {
+        mapLevel.getRooms().forEach(function (r) {
             for (var i = r.x + 1; i <= r.x + r.width - 2; i++) {
                 availList.push(i * 10000 + r.y + 1);
                 availList.push(i * 10000 + r.y + r.height - 2);
@@ -19,7 +19,7 @@ dt.mapassemble = {
                 availList.push((r.x + 1) * 10000 + i);
                 availList.push((r.x + r.width - 2) * 10000 + i);
             }
-        }, mapLevel.getRooms());
+        });
         dt.debug.assert(availList.length >= 2);
         dt.suger.shuffle(availList, ctx);
         var up = {

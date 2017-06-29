@@ -31,8 +31,8 @@ dt.suger = {
     getKeys: function (obj) {
         dt.debug.assert(dt.suger.isObject(obj));
         var ret = [];
-        for (var key in obj){
-            if (!obj.hasOwnProperty(key)){
+        for (var key in obj) {
+            if (!obj.hasOwnProperty(key)) {
                 continue;
             }
             ret.push(key);
@@ -102,14 +102,14 @@ dt.suger = {
 
         if (self.isObject(obj) && isPOD(obj)) {
             ret = {};
-            dt.functional.foreach(function (k, v) {
-                ret[k] = v;
-            }, obj);
+            obj.keys().forEach(function (k) {
+                ret[k] = obj[k];
+            });
         }
         else if (self.isArray(obj)) {
-            ret = dt.functional.filter(function () {
+            ret = obj.filter(function () {
                 return true;
-            }, obj);
+            });
         }
         else {
             dt.debug.assert(false);
@@ -155,18 +155,18 @@ dt.suger = {
             }
             else if (self.isObject(src)) {
                 dst = dst || {};
-                dt.functional.foreach(function (propName, propValue) {
-                    if (!keyFilter(propName, propValue)) return;
-                    if (override || !Object.prototype.hasOwnProperty.call(dst, propName)) {
-                        dst[keyMorpher(propName)] = doCopy(propValue);
+                src.keys().forEach(function (k) {
+                    if (!keyFilter(k, src[k])) return;
+                    if (override || !Object.prototype.hasOwnProperty.call(dst, k)) {
+                        dst[keyMorpher(k)] = doCopy(src[k]);
                     }
-                }, src, true);
+                });
             }
             else if (self.isArray(src)) {
                 dst = dst || [];
-                dt.functional.foreach(function (item, idx) {
+                src.forEach(function (item, idx) {
                     dst.push(arrayMorpher(doCopy(item), idx));
-                }, src);
+                });
             }
             else {
                 return src;
@@ -179,74 +179,16 @@ dt.suger = {
 };
 
 dt.functional = {
-    foreach: function (procedure, any) {
-        if (dt.suger.isArray(any)) {
-            this._foreachArr(procedure, any);
-        }
-        else if (dt.suger.isString(any)) {
-            this._foreachChar(procedure, any);
-        }
-        else if (dt.suger.isObject(any)) {
-            this._foreachObj(procedure, any);
-        }
-        else {
-            dt.debug.assert(false);
-        }
-    },
-
     for2DMatrix: function (procedure, matrix) {
         for (var idx0 = 0; idx0 < matrix.length; idx0++) {
             for (var idx1 = 0; idx1 < matrix[idx0].length; idx1++) {
                 procedure(idx0, idx1, matrix[idx0][idx1]);
             }
         }
-    },
-
-    map: function (procedure, arr) {
-        var ret = [];
-        this._foreachArr(function (item, idx) {
-            ret.push(procedure(item, idx));
-        }, arr);
-        return ret;
-    },
-
-    reduce: function (procedure, arr, nullValue) {
-        if (arr.length <= 0) {
-            return nullValue;
-        }
-        else {
-            var car = arr.unshift();
-            return procedure(car, this.reduce(procedure, arr, nullValue));
-        }
-    },
-
-    filter: function (procedure, arr) {
-        var ret = [];
-        this._foreachArr(function (item, idx) {
-            if (procedure(item, idx)) {
-                ret.push(item);
-            }
-        }, arr);
-        return ret;
-    },
-
-    _foreachArr: function (procedure, arr) {
-        for (var i = 0, len = arr.length; i < len; i++) {
-            procedure(arr[i], i);
-        }
-    },
-
-    _foreachObj: function (procedure, obj) {
-        for (var propName in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, propName)) {
-                procedure(propName, obj[propName]);
-            }
-        }
-    },
-
-    _foreachChar: function (procedure, str) {
-        for (var i = 0, len = str.length; i < len; i++) {
-            procedure(str[i], i);
-        }
     }
 };
+
+dt.builtInExtension = function () {
+
+};
+dt.builtInExtension();
