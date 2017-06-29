@@ -4,8 +4,8 @@
 
 var dt = dt || {};
 
-dt.main = function () {
-    dt.global.context = new dt.Context(5);
+dt.test = function () {
+    dt.global.context = new dt.Context(0);
     var mapConfig = {
         width: 31,
         height: 31,
@@ -19,7 +19,9 @@ dt.main = function () {
         doorNumProbability: [0.4, 0.4, 0.15, 0.05]
     };
 
-    dt.mapgen.generateMapLevel(mapConfig, dt.global.context);
+    var map = dt.mapgen.generateMapLevel(mapConfig, dt.global.context);
+    var stairs = dt.mapassemble.makeStairs(map.mapLevel, map.rooms, dt.global.context);
+    dt.debug.dumpAscIIMap(map.mapLevel);
 };
 
-dt.main();
+dt.test();

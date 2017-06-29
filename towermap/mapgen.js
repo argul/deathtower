@@ -3,15 +3,13 @@
  */
 
 dt.mapgen = {
-    TILE_WALL: 0,
-    TILE_CORRIDOR: 1,
-    TILE_ROOMFLOOR: 2,
+    _DEBUG_DETAIL: false,
     generateMapLevel: function (mapConfig, ctx) {
         var self = this;
-        var mapLevel = dt.suger.genMatrix2D(mapConfig.width, mapConfig.height, this.TILE_WALL);
+        var mapLevel = dt.suger.genMatrix2D(mapConfig.width, mapConfig.height, dt.mapconst.TILE_WALL);
         for (var i = 1; i <= mapConfig.width - 2; i += 2) {
             for (var j = 1; j <= mapConfig.height - 2; j += 2) {
-                this._setTile(mapLevel, i, j, this.TILE_CORRIDOR);
+                this._setTile(mapLevel, i, j, dt.mapconst.TILE_CORRIDOR);
             }
         }
 
@@ -19,13 +17,16 @@ dt.mapgen = {
         var carveRoom = function (r) {
             for (var i = 1; i < r.width - 1; i++) {
                 for (var j = 1; j < r.height - 1; j++) {
-                    self._setTile(mapLevel, r.x + i, r.y + j, self.TILE_ROOMFLOOR);
+                    self._setTile(mapLevel, r.x + i, r.y + j, dt.mapconst.TILE_ROOMFLOOR);
                 }
             }
         };
+
         dt.functional.foreach(carveRoom, rooms);
-        dt.debug.verbose('only rooms');
-        dt.debug.dumpAscIIMap(mapLevel);
+        if (this._DEBUG_DETAIL) {
+            dt.debug.verbose('only rooms');
+            dt.debug.dumpAscIIMap(mapLevel);
+        }
 
         var paramPack = {
             mapLevel: mapLevel,
@@ -34,16 +35,27 @@ dt.mapgen = {
             ctx: ctx
         };
         this._carveMaze(paramPack);
-        dt.debug.verbose('rooms & maze');
-        dt.debug.dumpAscIIMap(mapLevel);
+        if (this._DEBUG_DETAIL) {
+            dt.debug.verbose('rooms & maze');
+            dt.debug.dumpAscIIMap(mapLevel);
+        }
 
         this._openDoors(paramPack);
-        dt.debug.verbose('rooms & maze & doors');
-        dt.debug.dumpAscIIMap(mapLevel);
+        if (this._DEBUG_DETAIL) {
+            dt.debug.verbose('rooms & maze & doors');
+            dt.debug.dumpAscIIMap(mapLevel);
+        }
 
         this._sealDeadend(paramPack);
-        dt.debug.verbose('final');
-        dt.debug.dumpAscIIMap(mapLevel);
+        if (this._DEBUG_DETAIL) {
+            dt.debug.verbose('final');
+            dt.debug.dumpAscIIMap(mapLevel);
+        }
+
+        return {
+            mapLevel: mapLevel,
+            rooms: rooms
+        }
     },
 
     _setTile: function (mapLevel, x, y, tile) {
@@ -67,6 +79,7 @@ dt.mapgen = {
                 }
                 else {
                     var r = {
+                        idx: i,
                         x: 0,
                         y: 0,
                         width: ctx.random.randomOdd(mapConfig.minRoomWidth, mapConfig.maxRoomWidth),
@@ -151,7 +164,7 @@ dt.mapgen = {
                 });
                 var breakWallX = pos.x + choice[2];
                 var breakWallY = pos.y + choice[3];
-                this._setTile(paramPack.mapLevel, breakWallX, breakWallY, this.TILE_CORRIDOR);
+                this._setTile(paramPack.mapLevel, breakWallX, breakWallY, dt.mapconst.TILE_CORRIDOR);
             }
         }
         dt.debug.assert(dt.suger.getKeys(todos).length <= 0);
@@ -180,28 +193,28 @@ dt.mapgen = {
             var canBeDoors = [];
             if (r.y > 0) { //bottom walls
                 for (var i = 1; i < r.width - 1; i++) {
-                    if (self._getTile(paramPack.mapLevel, r.x + i, r.y - 1) == self.TILE_CORRIDOR) {
+                    if (self._getTile(paramPack.mapLevel, r.x + i, r.y - 1) == dt.mapconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x + i, y: r.y});
                     }
                 }
             }
             if ((r.y + r.height) < paramPack.mapConfig.height) { //top walls
                 for (var i = 1; i < r.width - 1; i++) {
-                    if (self._getTile(paramPack.mapLevel, r.x + i, r.y + r.height) == self.TILE_CORRIDOR) {
+                    if (self._getTile(paramPack.mapLevel, r.x + i, r.y + r.height) == dt.mapconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x + i, y: r.y + r.height - 1});
                     }
                 }
             }
             if (r.x > 0) { //left walls
                 for (var i = 1; i < r.height - 1; i++) {
-                    if (self._getTile(paramPack.mapLevel, r.x - 1, r.y + i) == self.TILE_CORRIDOR) {
+                    if (self._getTile(paramPack.mapLevel, r.x - 1, r.y + i) == dt.mapconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x, y: r.y + i});
                     }
                 }
             }
             if ((r.x + r.width) < paramPack.mapConfig.width) { //right walls
                 for (var i = 1; i < r.height - 1; i++) {
-                    if (self._getTile(paramPack.mapLevel, r.x + r.width, r.y + i) == self.TILE_CORRIDOR) {
+                    if (self._getTile(paramPack.mapLevel, r.x + r.width, r.y + i) == dt.mapconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x + r.width - 1, y: r.y + i});
                     }
                 }
@@ -211,7 +224,7 @@ dt.mapgen = {
             for (var i = 0; i < doorNum && i < canBeDoors.length; i++) {
                 var doorX = canBeDoors[i].x;
                 var doorY = canBeDoors[i].y;
-                self._setTile(paramPack.mapLevel, doorX, doorY, self.TILE_CORRIDOR);
+                self._setTile(paramPack.mapLevel, doorX, doorY, dt.mapconst.TILE_CORRIDOR);
             }
         }, paramPack.rooms);
     },
@@ -236,26 +249,26 @@ dt.mapgen = {
         var self = this;
         var todos = {};
         dt.functional.for2DMatrix(function (y, x, tile) {
-            if (tile == self.TILE_CORRIDOR) {
-                todos[x * 10000 + y] = { x: x, y: y };
+            if (tile == dt.mapconst.TILE_CORRIDOR) {
+                todos[x * 10000 + y] = {x: x, y: y};
             }
         }, paramPack.mapLevel);
         var checkDeadend = function (t) {
             var c = 0;
             if ((t.x < paramPack.mapConfig.width - 2)
-                && (self._getTile(paramPack.mapLevel, t.x + 1, t.y)) != self.TILE_WALL) {
+                && (self._getTile(paramPack.mapLevel, t.x + 1, t.y)) != dt.mapconst.TILE_WALL) {
                 c += 1;
             }
             if ((t.x > 1)
-                && (self._getTile(paramPack.mapLevel, t.x - 1, t.y) != self.TILE_WALL)) {
+                && (self._getTile(paramPack.mapLevel, t.x - 1, t.y) != dt.mapconst.TILE_WALL)) {
                 c += 1;
             }
             if ((t.y < paramPack.mapConfig.height - 2)
-                && (self._getTile(paramPack.mapLevel, t.x, t.y + 1) != self.TILE_WALL)) {
+                && (self._getTile(paramPack.mapLevel, t.x, t.y + 1) != dt.mapconst.TILE_WALL)) {
                 c += 1;
             }
             if ((t.y > 1)
-                && self._getTile(paramPack.mapLevel, t.x, t.y - 1) != self.TILE_WALL) {
+                && self._getTile(paramPack.mapLevel, t.x, t.y - 1) != dt.mapconst.TILE_WALL) {
                 c += 1;
             }
             dt.debug.assert(c >= 1);
@@ -273,7 +286,7 @@ dt.mapgen = {
                 }
             }
             dt.functional.foreach(function (element) {
-                self._setTile(paramPack.mapLevel, element.x, element.y, self.TILE_WALL);
+                self._setTile(paramPack.mapLevel, element.x, element.y, dt.mapconst.TILE_WALL);
                 delete todos[element.x * 10000 + element.y];
             }, deadendList);
         }

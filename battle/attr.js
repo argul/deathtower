@@ -28,4 +28,6 @@ dt.attr.AdvancedAttr = function () {
     this.mresist_pct = 0;//魔法抗性
     this.pabsorb_pct = 0;//物理吸收
     this.mabsorb_pct = 0;//魔法吸收
+    this.finaldmg_pct = 0;//最终伤害加成
+    this.finalresist_pct = 0;//最终伤害减免
 };

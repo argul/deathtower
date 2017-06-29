@@ -32,12 +32,6 @@ dt.debug = {
     },
 
     dumpAscIIMap: function (mapLevel) {
-        // var asciiMap = dt.suger.genMatrix2D(mapLevel[0].length, mapLevel.length, '*');
-        // dt.functional.for2DMatrix(function (idx0, idx1, tile) {
-        //     if (tile != dt.mapgen.TILE_WALL){
-        //         asciiMap[idx0][idx1] = ' ';
-        //     }
-        // }, mapLevel);
         var asciiMap = dt.suger.shallowCopy(mapLevel);
         asciiMap.reverse();
 
@@ -45,12 +39,16 @@ dt.debug = {
         dt.functional.foreach(function (line) {
             line = dt.functional.map(function (x) {
                 switch (x) {
-                    case 0:
+                    case dt.mapconst.TILE_WALL:
                         return '*';
-                    case 1:
+                    case dt.mapconst.TILE_CORRIDOR:
                         return ' ';
-                    case 2:
+                    case dt.mapconst.TILE_ROOMFLOOR:
                         return '#';
+                    case dt.mapconst.TILE_STAIR_UPWARD:
+                        return '↑';
+                    case dt.mapconst.TILE_STAIR_DOWNWARD:
+                        return '↓';
                     default:
                         return x;
                 }

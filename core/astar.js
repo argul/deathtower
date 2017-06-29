@@ -15,59 +15,65 @@ dt.astar = {
             dstDistance: Math.abs(startX - endX) + Math.abs(startY - endY)
         }];
         var visited = {};
+        var heapNodes = {};
+        heapNodes[startX * 10000 + startY] = heap[0];
 
         var checkXY = function (x, y) {
             if (x < 0 || x > (mapWidth - 1)) return false;
             else if (y < 0 || y > (mapHeight - 1)) return false;
             else if (!dt.suger.isUndefined(x * 10000 + y)) return false;
             else {
-                return mapLevel[y][x] != dt.mapgen.TILE_WALL;
+                return mapLevel[y][x] != dt.mapconst.TILE_WALL;
             }
         };
-        var markNode = function (node, offsetX, offsetY) {
-            var ret = {
-                x: node.x + offsetX,
-                y: node.y + offsetY,
-                parent: node,
-                srcDistance: node.srcDistance + Math.abs(offsetX) + Math.abs(offsetY),
-                dstDistance: Math.abs(node.x + offsetX - endX) + Math.abs(node.y + offsetY - endY)
-            };
-            self._addNodeToHeap(ret, heap);
-            return ret;
+        var sniffer = function (node, offsetX, offsetY) {
+            var stepX = node.x + offsetX;
+            var stepY = node.y + offsetY;
+            if (!checkXY(stepX, stepY)) {
+                return;
+            }
+            var existNode = heapNodes[stepX * 10000 + stepY];
+            if (dt.suger.isUndefined(existNode)) {
+                var stepNode = {
+                    x: stepX,
+                    y: stepY,
+                    parent: node,
+                    srcDistance: node.srcDistance + Math.abs(offsetX) + Math.abs(offsetY),
+                    dstDistance: Math.abs(stepX - endX) + Math.abs(stepY - endY)
+                };
+                self._heapPush(stepNode, heap);
+                if (stepX == endX && stepY == endY) {
+                    return stepNode;
+                }
+            }
+            else {
+                var distance1 = node.srcDistance + Math.abs(offsetX) + Math.abs(offsetY);
+                var distance2 = existNode.srcDistance;
+                if (distance1 < distance2) {
+                    existNode.srcDistance = distance1;
+                    self._heapifyUpward(heap, existNode.indexInHeap);
+                }
+            }
         };
-        var sniffer = function (node) {
+        var recon = function (node) {
             var n = undefined;
             visited[node.x * 10000 + node.y] = true;
-            if (checkXY(node.x, node.y + 1)) {
-                n = markNode(node, 0, 1);
-                if (n.dstDistance == 0) {
-                    return n;
-                }
-            }
-            if (checkXY(node.x, node.y - 1)) {
-                n = markNode(node, 0, -1);
-                if (n.dstDistance == 0) {
-                    return n;
-                }
-            }
-            if (checkXY(node.x + 1, node.y)) {
-                n = markNode(node, 1, 0);
-                if (n.dstDistance == 0) {
-                    return n;
-                }
-            }
-            if (checkXY(node.x - 1, node.y)) {
-                n = markNode(node, -1, 0);
-                if (n.dstDistance == 0) {
-                    return n;
-                }
-            }
+            n = sniffer(node, 0, 1);
+            if (!dt.suger.isUndefined(n)) return n;
+            n = sniffer(node, 0, -1);
+            if (!dt.suger.isUndefined(n)) return n;
+            n = sniffer(node, 1, 0);
+            if (!dt.suger.isUndefined(n)) return n;
+            n = sniffer(node, -1, 0);
+            if (!dt.suger.isUndefined(n)) return n;
             return undefined;
         };
 
         var finalNode = undefined;
         while (heap.length > 0) {
-            finalNode = sniffer(this._popHeapTop(heap));
+            var n = this._heapPop(heap);
+            delete heapNodes[n.x * 10000 + n.y];
+            finalNode = recon(n);
             if (!dt.suger.isUndefined(finalNode)) {
                 break;
             }
@@ -94,19 +100,27 @@ dt.astar = {
         }
     },
 
-    _addNodeToHeap: function (node, heap) {
+    _heapPush: function (node, heap) {
         heap.push(node);
+        node.indexInHeap = heap.length - 1;
         this._heapifyUpward(heap, heap.length - 1);
     },
 
-    _popHeapTop: function (heap) {
+    _heapPop: function (heap) {
         var ret = heap[0];
-        dt.suger.swap(heap, 0, heap.length - 1);
+        this._heapSwap(heap, 0, heap.length - 1);
         heap.pop();
+        ret.indexInHeap = undefined;
         if (heap.length > 1) {
-            this._heapifyFull(heap);
+            this._heapifyDownward(heap, 0);
         }
         return ret;
+    },
+
+    _heapSwap: function (heap, idx1, idx2) {
+        dt.suger.swap(heap, idx1, idx2);
+        heap[idx1].indexInHeap = idx2;
+        heap[idx2].indexInHeap = idx1;
     },
 
     _heapifyUpward: function (heap, fromIdx) {
@@ -115,7 +129,7 @@ dt.astar = {
                 var parentIdx = Math.floor(idx / 2);
                 if ((heap[idx].srcDistance + heap[idx].dstDistance)
                     < (heap[parentIdx].srcDistance + heap[parentIdx].dstDistance)) {
-                    dt.suger.swap(heap, idx, parentIdx);
+                    this._heapSwap(heap, idx, parentIdx);
                     worker(parentIdx);
                 }
             }
@@ -123,11 +137,37 @@ dt.astar = {
         worker(fromIdx);
     },
 
-    _heapifyFull: function (heap) {
-        var end = heap.length - 1;
-        var start = Math.floor(end / 2) + 1;
-        for (var idx = end; idx >= start; --idx) {
-            this._heapifyUpward(heap, idx);
-        }
+    _heapifyDownward: function (heap, fromIdx) {
+        var worker = function (idx) {
+            var lcIdx = idx * 2;
+            var rcIdx = idx * 2 + 1;
+            if (lcIdx >= heap.length) {
+                return;
+            }
+            else if (rcIdx >= heap.length) {
+                var d1 = heap[idx].srcDistance + heap[idx].dstDistance;
+                var d2 = heap[lcIdx].srcDistance + heap[lcIdx].dstDistance;
+                if (d2 < d1) {
+                    this._heapSwap(heap, idx, lcIdx);
+                    worker(lcIdx);
+                }
+            }
+            else {
+                var d1 = heap[idx].srcDistance + heap[idx].dstDistance;
+                var d2 = heap[lcIdx].srcDistance + heap[lcIdx].dstDistance;
+                var d3 = heap[rcIdx].srcDistance + heap[rcIdx].dstDistance;
+                if (d2 < d1 || d3 < d1) {
+                    if (d2 < d3) {
+                        this._heapSwap(heap, idx, lcIdx);
+                        worker(lcIdx);
+                    }
+                    else {
+                        this._heapSwap(heap, idx, rcIdx);
+                        worker(rcIdx);
+                    }
+                }
+            }
+        };
+        worker(fromIdx);
     }
 };
