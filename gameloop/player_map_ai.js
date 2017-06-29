@@ -10,11 +10,15 @@ dt.mapAICode = {
 
 dt.registerClassInheritance('dt.Class', function () {
     dt.PlayerMapAI = dt.Class.extend({
+        DECISION_EXPLORE_ROOM: 'DECISION_EXPLORE_ROOM',
+        DECISION_GOTO_ROOM: 'DECISION_GOTO_ROOM',
+        DECISION_GOTO_TREASURE: 'DECISION_GOTO_TREASURE',
+        DECISION_GOTO_MONSTER: 'DECISION_GOTO_MONSTER',
         ctor: function (abacusRef, strategy) {
             this._abacusRef = abacusRef;
             this._strategy = strategy;
             this._curDecision = undefined;
-            this._unvisitedRooms = dt.suger.shallowCopy(abacusRef.mapStat.mapLevel.getRooms());
+            this._curRoom = undefined;
         },
 
         getAbacusRef: function () {
@@ -30,10 +34,11 @@ dt.registerClassInheritance('dt.Class', function () {
             var x = abacus.playerStat.posX;
             var y = abacus.playerStat.posY;
             var mapLevel = abacus.mapStat.mapLevel;
-            if (mapLevel.getTile(x, y) == dt.mapconst.TILE_ROOMFLOOR){
-
+            if (mapLevel.getTile(x, y) == dt.mapconst.TILE_ROOMFLOOR) {
+                this._curRoom = mapLevel.getRoomByTile(x, y);
+                this._curDecision = this.DECISION_EXPLORE_ROOM;
             }
-            else{
+            else {
 
             }
         },

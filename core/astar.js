@@ -3,10 +3,8 @@
  */
 
 dt.astar = {
-    seekPath: function (mapLevel, startX, startY, endX, endY) {
+    seekPath: function (mapLevel, startX, startY, endX, endY, tileChecker) {
         var self = this;
-        var mapWidth = mapLevel[0].length;
-        var mapHeight = mapLevel.length;
         var heap = [{
             x: startX,
             y: startY,
@@ -19,11 +17,11 @@ dt.astar = {
         heapNodes[startX * 10000 + startY] = heap[0];
 
         var checkXY = function (x, y) {
-            if (x < 0 || x > (mapWidth - 1)) return false;
-            else if (y < 0 || y > (mapHeight - 1)) return false;
-            else if (!dt.suger.isUndefined(x * 10000 + y)) return false;
+            if (x < 0 || x > (mapLevel.width - 1)) return false;
+            else if (y < 0 || y > (mapLevel.height - 1)) return false;
+            else if (!dt.suger.isUndefined(visited[x * 10000 + y])) return false;
             else {
-                return mapLevel[y][x] != dt.mapconst.TILE_WALL;
+                return tileChecker(mapLevel.getTile(x, y));
             }
         };
         var sniffer = function (node, offsetX, offsetY) {

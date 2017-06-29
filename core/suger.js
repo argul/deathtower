@@ -189,6 +189,27 @@ dt.functional = {
 };
 
 dt.builtInExtension = function () {
-
+    if (!Array.prototype.removeFirst) {
+        Array.prototype.removeFirst = function (f) {
+            for (var i = 0; i < this.length; i++) {
+                if (f(this[i], i)) {
+                    this.splice(i);
+                }
+            }
+        };
+    }
+    if (!Array.prototype.removeAll) {
+        Array.prototype.removeAll = function (f) {
+            var needRemove = [];
+            for (var i = this.length - 1; i >= 0; i++) {
+                if (f(this[i], i)) {
+                    needRemove.push(i);
+                }
+            }
+            for (var i = 0; i < needRemove.length; i++) {
+                this.splice(needRemove[i]);
+            }
+        };
+    }
 };
 dt.builtInExtension();

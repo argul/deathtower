@@ -38,6 +38,10 @@ dt.mapassemble = {
         }
     },
 
+    makeStairs_BossLevel: function () {
+
+    },
+
     makeTreasures: function () {
 
     },
@@ -48,5 +52,9 @@ dt.mapassemble = {
 
     makeMonsters: function () {
 
+    },
+    
+    makeMonsters_BossLevel: function () {
+        
     }
 };
