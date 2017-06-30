@@ -33,10 +33,19 @@ dt.Random = function (seed) {
             return this.random01() < 0.5;
         },
 
-        randomPick: function (arr) {
-            dt.debug.assert(dt.suger.isArray(arr));
-            dt.debug.assert(arr.length > 0);
-            return arr[this.randomInt(0, arr.length - 1)];
+        randomPick: function (any) {
+            if (dt.suger.isArray(any)) {
+                dt.debug.assert(any.length > 0);
+                return any[this.randomInt(0, any.length - 1)];
+            }
+            else if (dt.suger.isObject(any)) {
+                var arr = Object.keys(any);
+                dt.debug.assert(arr.length > 0);
+                return any[this.randomInt(0, arr.length - 1)];
+            }
+            else {
+                dt.debug.assert(false);
+            }
         }
     };
 };

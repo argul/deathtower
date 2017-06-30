@@ -3,7 +3,7 @@
  */
 
 dt.astar = {
-    seekPath: function (mapLevel, startX, startY, endX, endY, tileChecker) {
+    seekPath: function (mapLevel, startX, startY, endX, endY) {
         var self = this;
         var heap = [{
             x: startX,
@@ -21,7 +21,7 @@ dt.astar = {
             else if (y < 0 || y > (mapLevel.height - 1)) return false;
             else if (!dt.suger.isUndefined(visited[x * 10000 + y])) return false;
             else {
-                return tileChecker(mapLevel.getTile(x, y));
+                return mapLevel.getTile(x, y) < dt.mapconst.TILE_PASS;
             }
         };
         var sniffer = function (node, offsetX, offsetY) {
@@ -89,8 +89,8 @@ dt.astar = {
                     y: stepback.y
                 })
             }
+            ret.pop();
             ret.reverse();
-            ret.shift();
             return ret;
         }
         else {
