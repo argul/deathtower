@@ -1,9 +1,9 @@
 /**
- * Created by argulworm on 6/29/17.
+ * Created by argulworm on 6/30/17.
  */
 
 dt.registerClassInheritance('dt.Class', function () {
-    dt.PlayerMapExecutor = dt.Class.extend({
+    dt.BattleExecutor = dt.Class.extend({
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },

@@ -1,0 +1,19 @@
+/**
+ * Created by argulworm on 6/30/17.
+ */
+
+dt.registerClassInheritance('dt.AIStateInterface', function () {
+    dt.MapAIStateExploreRoom = dt.AIStateInterface.extend({
+        ctor : function (aiRef) {
+            this.aiRef = aiRef;
+        },
+
+        getStateName: function () {
+            return 'MapAIStateExploreRoom';
+        },
+
+        tick: function () {
+            
+        }
+    });
+});

@@ -3,6 +3,9 @@
  */
 
 dt.debug = {
+    isStrict: function () {
+        return true;
+    },
     _VERBOSE: true,
     verbose: function () {
         if (!this._VERBOSE) {
