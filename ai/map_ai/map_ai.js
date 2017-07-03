@@ -35,12 +35,12 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         ctor: function (abacusRef, strategy) {
             this._abacusRef = abacusRef;
             this._strategy = strategy;
-            this._AIStatePriorityList = [
-                new dt.MapAIStateExploreRoom(this),
-                new dt.MapAIStateGotoRoom(this),
-                new dt.MapAIStateGotoLoot(this),
-                new dt.MapAIStateGotoMonster(this),
-                new dt.MapAIStateGotoStair(this)
+            this._AIGadgetPriorityList = [
+                new dt.MapAIGadgetExploreRoom(this),
+                new dt.MapAIGadgetGotoRoom(this),
+                new dt.MapAIGadgetGotoLoot(this),
+                new dt.MapAIGadgetGotoMonster(this),
+                new dt.MapAIGadgetGotoStair(this)
             ];
             this._AIState = undefined;
             this._remainRooms = {};
@@ -55,25 +55,13 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         },
 
         tick: function () {
-            if (dt.suger.isUndefined(this._AIState)) {
-                this._AIState = this._getNextAIState();
-            }
-            else {
-                if (this._AIState.isDone()) {
-                    this._AIState.exit();
-                    this._AIState = this._getNextAIState();
+            for (var i = 0; i < this._AIGadgetPriorityList.length; i++) {
+                var decisions = this._AIGadgetPriorityList[i].getDecisions();
+                if (!dt.suger.isUndefined(decisions)){
+                    return decisions;
                 }
             }
-            dt.debug.assert(this._AIState);
-            return this._AIState.tick();
-        },
-
-        _getNextAIState: function () {
-            for (var i = 0; i < this._AIStatePriorityList.length; i++) {
-                if (this._AIStatePriorityList[i].enter()) {
-                    return this._AIStatePriorityList[i];
-                }
-            }
+            dt.debug.assert(false);
         },
 
         decideRaidMonster: function (monster) {

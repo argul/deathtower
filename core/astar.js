@@ -4,6 +4,9 @@
 
 dt.astar = {
     seekPath: function (mapLevel, startX, startY, endX, endY, judgeConnect) {
+        if (startX == endX && startY == endY){
+            dt.debug.assert(false);
+        }
         var self = this;
         var heap = [{
             x: startX,
