@@ -5,7 +5,12 @@
 dt.registerClassInheritance('dt.Class', function () {
     dt.AIStateInterface = dt.Class.extend({
         ctor: function () {
-            this._isDone = false;
+        },
+
+        enter: function () {
+        },
+
+        exit: function () {
         },
 
         getStateName: function () {
@@ -17,11 +22,7 @@ dt.registerClassInheritance('dt.Class', function () {
         },
 
         isDone: function () {
-            return this._isDone;
-        },
-
-        markAsDone: function () {
-            this._isDone = true;
+            dt.debug.assert(false);
         }
     });
 });

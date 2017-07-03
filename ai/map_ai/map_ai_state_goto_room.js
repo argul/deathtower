@@ -13,31 +13,35 @@ dt.registerClassInheritance('dt.AIStateInterface', function () {
         },
 
         tick: function () {
-            var path = this.aiRef._pathInfo.curPath;
+            var ret = undefined;
+            var path = this.aiRef._curPath;
             var next = path.shift();
             if (this.aiRef.getMapLevel().getTile(next.x, next.y) == dt.mapconst.TILE_MONSTER) {
-                return this._onEncounterMonster(next);
+                ret = this._onEncounterMonster(next);
             }
             else if (this.aiRef.getMapLevel().getTile(next.x, next.y) == dt.mapconst.TILE_TRAP) {
-                return [{
+                ret = [{
                     aicode: dt.mapAIDecisionCode.DISARM_TRAP,
                     x: next.x,
                     y: next.y
                 }];
             }
             else if (this.aiRef.getMapLevel().getTile(next.x, next.y) == dt.mapconst.TILE_TRAP_PERSISTENT) {
-                return this._onEncounterHardTrap(next);
+                ret = this._onEncounterHardTrap(next);
             }
             else {
-                if (path.length <= 0) {
-                    this.markAsDone();
-                }
-                return [{
+                ret = [{
                     aicode: dt.mapAIDecisionCode.MOVE,
                     moveToX: next.x,
                     moveToY: next.y
                 }];
             }
+
+            if (path.length <= 0) {
+                this.markAsDone();
+            }
+
+            return ret;
         },
 
         _onEncounterMonster: function (next) {

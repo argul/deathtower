@@ -27,9 +27,9 @@ dt.registerClassInheritance('dt.Class', function () {
                 mapLevel: mapLevel,
                 upstair: stairs.up,
                 downstair: stairs.down,
-                loots: undefined,//todo
-                monsters: undefined,//todo
-                traps: undefined
+                loots: [],//todo [dt.MapLoot]
+                monsters: [],//todo [dt.MapMonster]
+                traps: []//todo [dt.MapTrap]
             };
             this.playerStat = {
                 teamData: undefined,//todo
@@ -39,10 +39,13 @@ dt.registerClassInheritance('dt.Class', function () {
             this.mapAI = new dt.MapAI(this);
             this.mapExecutor = new dt.MapExecutor(this);
             this.battleExecutor = new dt.BattleExecutor(this);
-            this.mapAI.reset();
 
             this.curAI = this.mapAI;
             this.curExecutor = this.mapExecutor;
+        },
+
+        getRandom: function () {
+            return this.ctx.random;
         },
 
         tick: function () {

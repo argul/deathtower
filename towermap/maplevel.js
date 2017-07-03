@@ -53,5 +53,14 @@ dt.registerClassInheritance('dt.Class', function () {
                 f(idx1, idx0, tile);
             }, this.tiles);
         },
+        
+        foreachRoomTile : function (f, roomId) {
+            var r = this.roomDict[roomId];
+            for (var i = 1; i < r.width - 1; i++){
+                for (var j = 1; j < r.height - 1; j++){
+                    f(r.x + i, r.y + j, this.getTile(r.x + i, r.y + j));
+                }
+            }
+        }
     });
 });

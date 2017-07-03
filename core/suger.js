@@ -92,6 +92,10 @@ dt.suger = {
         return typeof obj === "object" && Object.prototype.toString.call(obj) === '[object Object]';
     },
 
+    isFunction: function (obj) {
+        return typeof obj === 'function';
+    },
+
     shallowCopy: function (obj) {
         var ret = undefined;
         var self = this;
@@ -192,8 +196,15 @@ dt.builtInExtension = function () {
     if (!Array.prototype.removeFirst) {
         Array.prototype.removeFirst = function (f) {
             for (var i = 0; i < this.length; i++) {
-                if (f(this[i], i)) {
-                    this.splice(i);
+                if (dt.suger.isFunction(f)) {
+                    if (f(this[i], i)) {
+                        this.splice(i);
+                    }
+                }
+                else {
+                    if (f === this[i]) {
+                        this.splice(i);
+                    }
                 }
             }
         };
@@ -202,8 +213,15 @@ dt.builtInExtension = function () {
         Array.prototype.removeAll = function (f) {
             var needRemove = [];
             for (var i = this.length - 1; i >= 0; i++) {
-                if (f(this[i], i)) {
-                    needRemove.push(i);
+                if (dt.suger.isFunction(f)) {
+                    if (f(this[i], i)) {
+                        needRemove.push(i);
+                    }
+                }
+                else{
+                    if (f === this[i]){
+                        needRemove.push(i);
+                    }
                 }
             }
             for (var i = 0; i < needRemove.length; i++) {

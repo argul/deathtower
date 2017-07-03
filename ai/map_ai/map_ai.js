@@ -35,102 +35,45 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         ctor: function (abacusRef, strategy) {
             this._abacusRef = abacusRef;
             this._strategy = strategy;
+            this._AIStatePriorityList = [
+                new dt.MapAIStateExploreRoom(this),
+                new dt.MapAIStateGotoRoom(this),
+                new dt.MapAIStateGotoLoot(this),
+                new dt.MapAIStateGotoMonster(this),
+                new dt.MapAIStateGotoStair(this)
+            ];
             this._AIState = undefined;
             this._remainRooms = {};
-            this._remainLoots = {};
             var self = this;
             abacusRef.mapStat.mapLevel.getRooms().forEach(function (x) {
                 self._remainRooms[x.roomId] = x;
             });
-            abacusRef.mapStat.mapLevel.foreachTile(function (x, y, tile) {
-                if (tile == dt.mapconst.TILE_EQUIPMENT
-                    || tile == dt.mapconst.TILE_POTION
-                    || tile == dt.mapconst.TILE_SCROLL) {
-                    self._remainLoots[x * 10000 + y] = true;
-                }
-            });
-            this._roomInfo = this._getDummyRoomInfo();
-            this._pathInfo = this._getDummyPathInfo();
-        },
-
-        getAbacusRef: function () {
-            return this._abacusRef;
-        },
-
-        getRandom: function () {
-            return this.getAbacusRef().ctx.random;
-        },
-
-        getMapLevel: function () {
-            return this.getAbacusRef().mapStat.mapLevel;
         },
 
         getStrategy: function () {
             return this._strategy;
         },
 
-        reset: function () {
-            var abacus = this.getAbacusRef();
-            var x = abacus.playerStat.posX;
-            var y = abacus.playerStat.posY;
-            var mapLevel = abacus.mapStat.mapLevel;
-            if (mapLevel.getTile(x, y) == dt.mapconst.TILE_ROOMFLOOR) {
-                this._roomInfo.curRoom = mapLevel.getRoomByTile(x, y);
-                delete this._remainRooms[this._roomInfo.curRoom.roomId];
-                this._AIState = new dt.MapAIStateExploreRoom(this);
-            }
-            else {
-                this._AIState = new dt.MapAIStateGotoRoom(this);
-                this._seekNextRoom();
-            }
-        },
-
-        _getDummyRoomInfo: function () {
-            return {
-                curRoom: undefined,
-                dstRoom: undefined,
-                loots: undefined,
-                treasures: undefined,
-                monsters: undefined
-            };
-        },
-
-        _getDummyPathInfo: function () {
-            return {
-                curPath: undefined
-            };
-        },
-
-        _seekNextRoom: function () {
-            var rndRoom = this.getRandom().randomPick(this._remainRooms);
-            var posX = this.getAbacusRef().playerStat.posX;
-            var posY = this.getAbacusRef().playerStat.posY;
-            dt.debug.assert(!this._isRoomfloor(posX, posY));
-            var centerX = rndRoom.x + Math.floor(rndRoom.width / 2) + 1;
-            var centerY = rndRoom.y + Math.floor(rndRoom.height / 2) + 1;
-            var path = dt.astar.seekPath(this.getMapLevel(), posX, posY, centerX, centerY);
-            for (var i = 0; i < path.length; i++) {
-                if (this._isRoomfloor(path[i].x, path[i].y)) {
-                    path.splice(i + 1);
-                }
-            }
-            this._pathInfo.curPath = path;
-        },
-
-        _isRoomfloor: function (x, y) {
-            return this.getMapLevel().getTile(x, y) === dt.mapconst.TILE_ROOMFLOOR;
-        },
-
         tick: function () {
-            dt.debug.assert(this._AIState);
-            if (this._AIState.isDone()) {
+            if (dt.suger.isUndefined(this._AIState)) {
                 this._AIState = this._getNextAIState();
             }
+            else {
+                if (this._AIState.isDone()) {
+                    this._AIState.exit();
+                    this._AIState = this._getNextAIState();
+                }
+            }
+            dt.debug.assert(this._AIState);
             return this._AIState.tick();
         },
 
         _getNextAIState: function () {
-
+            for (var i = 0; i < this._AIStatePriorityList.length; i++) {
+                if (this._AIStatePriorityList[i].enter()) {
+                    return this._AIStatePriorityList[i];
+                }
+            }
         },
 
         decideRaidMonster: function (monster) {
