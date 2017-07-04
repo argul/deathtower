@@ -2,6 +2,38 @@
  * Created by argulworm on 6/15/17.
  */
 
+dt.isUndefined = function (obj) {
+    return typeof obj === 'undefined';
+};
+
+dt.isArray = function (obj) {
+    if (Array.isArray(obj)) {
+        return true;
+    }
+    else if (typeof obj === 'object' && Object.prototype.toString.call(obj) == '[object Array]') {
+        return true;
+    }
+    else {
+        return false;
+    }
+};
+
+dt.isNumber = function (obj) {
+    return typeof obj == 'number' || Object.prototype.toString.call(obj) == '[object Number]';
+};
+
+dt.isString = function (obj) {
+    return typeof obj == 'string' || Object.prototype.toString.call(obj) == '[object String]';
+};
+
+dt.isObject = function (obj) {
+    return typeof obj === "object" && Object.prototype.toString.call(obj) === '[object Object]';
+};
+
+dt.isFunction = function (obj) {
+    return typeof obj === 'function';
+};
+
 dt.suger = {
     print: function (any) {
         if (this.isArray(any) || this.isObject(any)) {
@@ -29,7 +61,7 @@ dt.suger = {
     },
 
     getKeys: function (obj) {
-        dt.debug.assert(dt.suger.isObject(obj));
+        dt.assert(dt.isObject(obj));
         var ret = [];
         for (var key in obj) {
             if (!obj.hasOwnProperty(key)) {
@@ -64,38 +96,6 @@ dt.suger = {
         arr[to] = t;
     },
 
-    isUndefined: function (obj) {
-        return typeof obj === 'undefined';
-    },
-
-    isArray: function (obj) {
-        if (Array.isArray(obj)) {
-            return true;
-        }
-        else if (typeof obj === 'object' && Object.prototype.toString.call(obj) == '[object Array]') {
-            return true;
-        }
-        else {
-            return false;
-        }
-    },
-
-    isNumber: function (obj) {
-        return typeof obj == 'number' || Object.prototype.toString.call(obj) == '[object Number]';
-    },
-
-    isString: function (obj) {
-        return typeof obj == 'string' || Object.prototype.toString.call(obj) == '[object String]';
-    },
-
-    isObject: function (obj) {
-        return typeof obj === "object" && Object.prototype.toString.call(obj) === '[object Object]';
-    },
-
-    isFunction: function (obj) {
-        return typeof obj === 'function';
-    },
-
     shallowCopy: function (obj) {
         var ret = undefined;
         var self = this;
@@ -116,7 +116,7 @@ dt.suger = {
             });
         }
         else {
-            dt.debug.assert(false);
+            dt.assert(false);
         }
         return ret;
     },
@@ -129,14 +129,14 @@ dt.suger = {
         };
 
         if (self.isObject(obj)) {
-            dt.debug.assert(isPOD(obj));
+            dt.assert(isPOD(obj));
             destination = self.isUndefined(destination) ? {} : destination;
         }
         else if (self.isArray(obj)) {
             destination = self.isUndefined(destination) ? [] : destination;
         }
         else {
-            dt.debug.assert(false);
+            dt.assert(false);
         }
 
         var keyFilter = (control && control.keyFilter) ? control.keyFilter : function () {
@@ -196,7 +196,7 @@ dt.builtInExtension = function () {
     if (!Array.prototype.removeFirst) {
         Array.prototype.removeFirst = function (f) {
             for (var i = 0; i < this.length; i++) {
-                if (dt.suger.isFunction(f)) {
+                if (dt.isFunction(f)) {
                     if (f(this[i], i)) {
                         this.splice(i);
                     }
@@ -213,13 +213,13 @@ dt.builtInExtension = function () {
         Array.prototype.removeAll = function (f) {
             var needRemove = [];
             for (var i = this.length - 1; i >= 0; i++) {
-                if (dt.suger.isFunction(f)) {
+                if (dt.isFunction(f)) {
                     if (f(this[i], i)) {
                         needRemove.push(i);
                     }
                 }
-                else{
-                    if (f === this[i]){
+                else {
+                    if (f === this[i]) {
                         needRemove.push(i);
                     }
                 }

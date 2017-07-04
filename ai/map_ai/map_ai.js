@@ -42,12 +42,11 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 new dt.MapAIGadgetGotoMonster(this),
                 new dt.MapAIGadgetGotoStair(this)
             ];
-            this._AIState = undefined;
-            this._remainRooms = {};
-            var self = this;
+            var unvisitedRooms = {};
             abacusRef.mapStat.mapLevel.getRooms().forEach(function (x) {
-                self._remainRooms[x.roomId] = x;
+                unvisitedRooms[x.roomId] = x;
             });
+            this.unvisitedRooms = unvisitedRooms;
         },
 
         getStrategy: function () {
@@ -57,11 +56,11 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         tick: function () {
             for (var i = 0; i < this._AIGadgetPriorityList.length; i++) {
                 var decisions = this._AIGadgetPriorityList[i].getDecisions();
-                if (!dt.suger.isUndefined(decisions)){
+                if (!dt.isUndefined(decisions)){
                     return decisions;
                 }
             }
-            dt.debug.assert(false);
+            dt.assert(false);
         },
 
         decideRaidMonster: function (monster) {
@@ -82,7 +81,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                     case dt.mapAIStrategy.FULL_COWARD:
                         return 2;
                     default:
-                        dt.debug.assert(false);
+                        dt.assert(false);
                 }
             }
         },
@@ -115,7 +114,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 case dt.mapAIStrategy.FULL_COWARD:
                     return 2;
                 default:
-                    dt.debug.assert(false);
+                    dt.assert(false);
             }
         }
     });

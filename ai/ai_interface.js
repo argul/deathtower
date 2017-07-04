@@ -5,11 +5,11 @@
 dt.registerClassInheritance('dt.Class', function () {
     dt.AIInterface = dt.Class.extend({
         reset: function () {
-            dt.debug.assert(false);
+            dt.assert(false);
         },
 
         tick: function () {
-            dt.debug.assert(false);
+            dt.assert(false);
         }
     });
 });

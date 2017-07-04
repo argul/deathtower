@@ -5,7 +5,7 @@
 dt.astar = {
     seekPath: function (mapLevel, startX, startY, endX, endY, judgeConnect) {
         if (startX == endX && startY == endY){
-            dt.debug.assert(false);
+            dt.assert(false);
         }
         var self = this;
         var heap = [{
@@ -22,9 +22,9 @@ dt.astar = {
         var checkXY = function (x, y) {
             if (x < 0 || x > (mapLevel.width - 1)) return false;
             else if (y < 0 || y > (mapLevel.height - 1)) return false;
-            else if (!dt.suger.isUndefined(visited[x * 10000 + y])) return false;
+            else if (!dt.isUndefined(visited[x * 10000 + y])) return false;
             else {
-                if (dt.suger.isFunction(judgeConnect)){
+                if (dt.isFunction(judgeConnect)){
                     return judgeConnect(mapLevel.getTile(x, y));
                 }
                 else{
@@ -39,7 +39,7 @@ dt.astar = {
                 return;
             }
             var existNode = heapNodes[stepX * 10000 + stepY];
-            if (dt.suger.isUndefined(existNode)) {
+            if (dt.isUndefined(existNode)) {
                 var stepNode = {
                     x: stepX,
                     y: stepY,
@@ -65,13 +65,13 @@ dt.astar = {
             var n = undefined;
             visited[node.x * 10000 + node.y] = true;
             n = sniffer(node, 0, 1);
-            if (!dt.suger.isUndefined(n)) return n;
+            if (!dt.isUndefined(n)) return n;
             n = sniffer(node, 0, -1);
-            if (!dt.suger.isUndefined(n)) return n;
+            if (!dt.isUndefined(n)) return n;
             n = sniffer(node, 1, 0);
-            if (!dt.suger.isUndefined(n)) return n;
+            if (!dt.isUndefined(n)) return n;
             n = sniffer(node, -1, 0);
-            if (!dt.suger.isUndefined(n)) return n;
+            if (!dt.isUndefined(n)) return n;
             return undefined;
         };
 
@@ -80,12 +80,12 @@ dt.astar = {
             var n = this._heapPop(heap);
             delete heapNodes[n.x * 10000 + n.y];
             finalNode = recon(n);
-            if (!dt.suger.isUndefined(finalNode)) {
+            if (!dt.isUndefined(finalNode)) {
                 break;
             }
         }
 
-        if (!dt.suger.isUndefined(finalNode)) {
+        if (!dt.isUndefined(finalNode)) {
             var ret = [{
                 x: finalNode.x,
                 y: finalNode.y

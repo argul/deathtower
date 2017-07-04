@@ -120,11 +120,11 @@ dt.mapgen = {
             else if (y < 1 || y > paramPack.mapConfig.height - 2) {
                 return false;
             }
-            else if (!dt.suger.isUndefined(visited[x * 10000 + y])) {
+            else if (!dt.isUndefined(visited[x * 10000 + y])) {
                 return false;
             }
             else {
-                return !dt.suger.isUndefined(todos[x * 10000 + y]);
+                return !dt.isUndefined(todos[x * 10000 + y]);
             }
         };
         while (mazeStack.length > 0) {
@@ -150,7 +150,7 @@ dt.mapgen = {
                 paramPack.mapLevel.setTile(breakWallX, breakWallY, dt.mapconst.TILE_CORRIDOR);
             }
         }
-        dt.debug.assert(dt.suger.getKeys(todos).length <= 0);
+        dt.assert(dt.suger.getKeys(todos).length <= 0);
     },
 
     _getMeshSlots: function (mapConfig, rooms) {
@@ -217,7 +217,7 @@ dt.mapgen = {
         mapConfig.doorNumProbability.forEach(function (x) {
             total += x;
         });
-        dt.debug.assert(Math.abs(total - 1.0) < 0.0001);
+        dt.assert(Math.abs(total - 1.0) < 0.0001);
         var f = ctx.random.random01();
         for (var i = 0; i < mapConfig.doorNumProbability.length; i++) {
             f -= mapConfig.doorNumProbability[i];
@@ -254,7 +254,7 @@ dt.mapgen = {
                 && paramPack.mapLevel.getTile(t.x, t.y - 1) != dt.mapconst.TILE_WALL) {
                 c += 1;
             }
-            dt.debug.assert(c >= 1);
+            dt.assert(c >= 1);
             return c == 1;
         };
         var deadendList = [];

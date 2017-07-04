@@ -2,6 +2,12 @@
  * Created by argulworm on 6/17/17.
  */
 
+dt.assert = function (c) {
+    if (!c) {
+        throw 'assert failure!';
+    }
+};
+
 dt.debug = {
     isStrict: function () {
         return true;
@@ -17,7 +23,7 @@ dt.debug = {
         else {
             var t = [];
             for (var i = 0; i < arguments.length; i++) {
-                if (dt.suger.isArray(arguments[i]) || dt.suger.isObject(arguments[i])) {
+                if (dt.isArray(arguments[i]) || dt.isObject(arguments[i])) {
                     t.push(JSON.stringify(arguments[i], null, 2));
                 }
                 else {
@@ -25,12 +31,6 @@ dt.debug = {
                 }
             }
             dt.suger.print(t.join('  '));
-        }
-    },
-
-    assert: function (c) {
-        if (!c) {
-            throw 'assert failure!';
         }
     },
 

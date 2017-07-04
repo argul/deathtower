@@ -20,7 +20,7 @@ dt.mapassemble = {
                 availList.push((r.x + r.width - 2) * 10000 + i);
             }
         });
-        dt.debug.assert(availList.length >= 2);
+        dt.assert(availList.length >= 2);
         dt.suger.shuffle(availList, ctx);
         var up = {
             x: Math.floor(availList[0] / 10000),

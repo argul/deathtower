@@ -101,7 +101,7 @@ dt.flushClassInheritance = function () {
             var d = dt.__pendingClassDefiners[i];
             if (isBaseClsUndefined(d.baseClsLex)) {
                 if (i == 0) {
-                    dt.debug.assert(false);
+                    dt.assert(false);
                 }
                 else {
                     dt.__pendingClassDefiners.splice(0, i);

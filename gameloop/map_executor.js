@@ -18,7 +18,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     this._executeMove(decision.moveToX, decision.moveToY);
                     break;
                 default:
-                    dt.debug.assert(false);
+                    dt.assert(false);
             }
         },
 
@@ -35,9 +35,7 @@ dt.registerClassInheritance('dt.Class', function () {
                 y: moveToY
             });
             var tile = this.getAbacusRef().mapStat.mapLevel.getTile(moveToX, moveToY);
-            if (tile == dt.mapconst.TILE_EQUIPMENT
-                || tile == dt.mapconst.TILE_POTION
-                || tile == dt.mapconst.TILE_SCROLL) {
+            if (tile > dt.mapconst.TILE_START_LOOT && tile < dt.mapconst.TILE_END_LOOT) {
                 ret.push({
                     behaviorCode: dt.behaviorCode.LOOT_MINOR,
                     loot: this.getAbacusRef().mapStat.loots[moveToX * 10000 + moveToY]
@@ -49,8 +47,8 @@ dt.registerClassInheritance('dt.Class', function () {
         _checkMove: function (moveToX, moveToY) {
             var tx = Math.abs(moveToX - this.getAbacusRef().playerStat.posX);
             var ty = Math.abs(moveToY - this.getAbacusRef().playerStat.posY);
-            dt.debug.assert(1 == (tx + ty));
-            dt.debug.assert(dt.mapconst.TILE_PASS > this.getAbacusRef().mapStat.mapLevel.getTile(moveToX, moveToY));
+            dt.assert(1 == (tx + ty));
+            dt.assert(dt.mapconst.TILE_PASS > this.getAbacusRef().mapStat.mapLevel.getTile(moveToX, moveToY));
         }
     });
 });

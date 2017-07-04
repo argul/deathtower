@@ -27,9 +27,9 @@ dt.registerClassInheritance('dt.Class', function () {
                 mapLevel: mapLevel,
                 upstair: stairs.up,
                 downstair: stairs.down,
-                loots: [],//todo [dt.MapLoot]
-                monsters: [],//todo [dt.MapMonster]
-                traps: []//todo [dt.MapTrap]
+                loots: {},//todo { posXY: dt.MapLoot }
+                monsters: {},//todo { posXY: dt.MapMonster }
+                traps: {}//todo { posXY: dt.MapTrap }
             };
             this.playerStat = {
                 teamData: undefined,//todo
@@ -58,7 +58,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     self._didExecuteDecision(x);
                 });
             }
-            dt.debug.assert(this.behaviors.length > 0);
+            dt.assert(this.behaviors.length > 0);
             return this.behaviors.shift();
         },
 

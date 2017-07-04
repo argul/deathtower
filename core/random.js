@@ -11,14 +11,14 @@ dt.Random = function (seed) {
         },
 
         randomOdd: function (min, max) {
-            dt.debug.assert(dt.math.isOdd(min));
-            dt.debug.assert(dt.math.isOdd(max));
+            dt.assert(dt.math.isOdd(min));
+            dt.assert(dt.math.isOdd(max));
             return min + this.randomInt(0, (max - min) / 2) * 2;
         },
 
         randomEven: function (min, max) {
-            dt.debug.assert(dt.math.isEven(min));
-            dt.debug.assert(dt.math.isEven(max));
+            dt.assert(dt.math.isEven(min));
+            dt.assert(dt.math.isEven(max));
             return min + this.randomInt(0, (max - min) / 2) * 2;
         },
 
@@ -34,17 +34,17 @@ dt.Random = function (seed) {
         },
 
         randomPick: function (any) {
-            if (dt.suger.isArray(any)) {
-                dt.debug.assert(any.length > 0);
+            if (dt.isArray(any)) {
+                dt.assert(any.length > 0);
                 return any[this.randomInt(0, any.length - 1)];
             }
-            else if (dt.suger.isObject(any)) {
+            else if (dt.isObject(any)) {
                 var arr = Object.keys(any);
-                dt.debug.assert(arr.length > 0);
+                dt.assert(arr.length > 0);
                 return any[this.randomInt(0, arr.length - 1)];
             }
             else {
-                dt.debug.assert(false);
+                dt.assert(false);
             }
         }
     };

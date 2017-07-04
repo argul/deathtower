@@ -8,7 +8,7 @@ dt.registerClassInheritance('dt.Class', function () {
         },
 
         getDecisions: function () {
-            dt.debug.assert(false);
+            dt.assert(false);
         }
     });
 });

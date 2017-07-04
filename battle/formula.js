@@ -8,8 +8,8 @@ dt.formula = {
     },
     
     _getPercent: function (pct, min, max) {
-        min = dt.suger.isUndefined(min) ? 0 : min;
-        max = dt.suger.isUndefined(max) ? 0 : max;
+        min = dt.isUndefined(min) ? 0 : min;
+        max = dt.isUndefined(max) ? 0 : max;
         var ret = pct / 100.0;
         if (ret < 0) return 0;
         else if (ret > 1) return 1;

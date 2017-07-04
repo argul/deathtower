@@ -25,9 +25,7 @@ dt.registerClassInheritance('dt.AIGadget', function () {
             var room = mapLevel.getRoomByTile(player.posX, player.posY);
             var loots = [];
             mapLevel.foreachRoomTile(function (x, y, tile) {
-                if (tile == dt.mapconst.TILE_EQUIPMENT
-                    || tile == dt.mapconst.TILE_POTION
-                    || tile == dt.mapconst.TILE_SCROLL) {
+                if (tile > dt.mapconst.TILE_START_LOOT && tile < dt.mapconst.TILE_END_LOOT) {
                     loots.push({x: x, y: y});
                 }
             }, room.roomId);
@@ -35,7 +33,7 @@ dt.registerClassInheritance('dt.AIGadget', function () {
 
             while (loots.length > 0) {
                 var path = this._checkReachable(mapLevel, room, player.posX, player.posY, loots[0].x, loots[0].y);
-                if (dt.suger.isUndefined(path)) {
+                if (dt.isUndefined(path)) {
                     loots.shift();
                 }
                 else {
@@ -53,7 +51,7 @@ dt.registerClassInheritance('dt.AIGadget', function () {
 
             while (monsters.length > 0) {
                 var path = this._checkReachable(mapLevel, room, player.posX, player.posY, monsters[0].x, monsters[0].y);
-                if (dt.suger.isUndefined(path)) {
+                if (dt.isUndefined(path)) {
                     monsters.shift();
                 }
                 else {
@@ -71,7 +69,7 @@ dt.registerClassInheritance('dt.AIGadget', function () {
 
             while (treasures.length > 0) {
                 var path = this._checkReachable(mapLevel, room, player.posX, player.posY, treasures[0].x, treasures[0].y);
-                if (dt.suger.isUndefined(path)) {
+                if (dt.isUndefined(path)) {
                     treasures.shift();
                 }
                 else {
@@ -94,13 +92,13 @@ dt.registerClassInheritance('dt.AIGadget', function () {
 
         _checkReachable: function (mapLevel, room, posX, posY, targetX, targetY) {
             var path = dt.astar.seekPath(mapLevel, posX, posY, targetX, targetY);
-            if (dt.suger.isUndefined(path)) {
+            if (dt.isUndefined(path)) {
                 return undefined;
             }
             else {
                 for (var i = 0; i < path.length; i++) {
                     var tr = mapLevel.getRoomByTile(path[i].x, path[i].y);
-                    if (dt.suger.isUndefined(tr) || tr.roomId != room.roomId) {
+                    if (dt.isUndefined(tr) || tr.roomId != room.roomId) {
                         return undefined;
                     }
                 }
