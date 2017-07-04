@@ -18,7 +18,7 @@ dt.debug = {
             return;
         }
         if (1 == arguments.length) {
-            dt.suger.print(arguments[0]);
+            dt.print(arguments[0]);
         }
         else {
             var t = [];
@@ -30,7 +30,7 @@ dt.debug = {
                     t.push(arguments[i]);
                 }
             }
-            dt.suger.print(t.join('  '));
+            dt.print(t.join('  '));
         }
     },
 
@@ -38,7 +38,7 @@ dt.debug = {
         var asciiMap = dt.suger.shallowCopy(mapLevel.tiles);
         asciiMap.reverse();
 
-        dt.suger.print('==========================================');
+        dt.print('==========================================');
         asciiMap.forEach(function (line) {
             line = line.map(function (x) {
                 switch (x) {
@@ -56,8 +56,8 @@ dt.debug = {
                         return x;
                 }
             });
-            dt.suger.print(line.join(''));
+            dt.print(line.join(''));
         });
-        dt.suger.print('==========================================');
+        dt.print('==========================================');
     }
 };

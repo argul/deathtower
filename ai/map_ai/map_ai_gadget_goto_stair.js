@@ -18,6 +18,9 @@ dt.registerClassInheritance('dt.AIGadget', function () {
                 path.forEach(function (t) {
                     t.aicode = dt.mapAIDecisionCode.MOVE;
                 });
+                path.push({
+                    aicode: dt.mapAIDecisionCode.GOTO_NEXT_MAP
+                });
                 return path;
             }
             else {

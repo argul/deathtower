@@ -4,30 +4,31 @@
 
 dt.astar = {
     seekPath: function (mapLevel, startX, startY, endX, endY, judgeConnect) {
-        if (startX == endX && startY == endY){
+        if (startX == endX && startY == endY) {
             dt.assert(false);
         }
         var self = this;
         var heap = [{
             x: startX,
             y: startY,
+            indexInHeap: 0,
             parent: undefined,
             srcDistance: 0,
             dstDistance: Math.abs(startX - endX) + Math.abs(startY - endY)
         }];
-        var visited = {};
+        var deadends = {};
         var heapNodes = {};
         heapNodes[startX * 10000 + startY] = heap[0];
 
         var checkXY = function (x, y) {
             if (x < 0 || x > (mapLevel.width - 1)) return false;
             else if (y < 0 || y > (mapLevel.height - 1)) return false;
-            else if (!dt.isUndefined(visited[x * 10000 + y])) return false;
+            else if (!dt.isUndefined(deadends[x * 10000 + y])) return false;
             else {
-                if (dt.isFunction(judgeConnect)){
+                if (dt.isFunction(judgeConnect)) {
                     return judgeConnect(mapLevel.getTile(x, y));
                 }
-                else{
+                else {
                     return mapLevel.getTile(x, y) < dt.mapconst.TILE_PASS;
                 }
             }
@@ -48,6 +49,7 @@ dt.astar = {
                     dstDistance: Math.abs(stepX - endX) + Math.abs(stepY - endY)
                 };
                 self._heapPush(stepNode, heap);
+                heapNodes[stepX * 10000 + stepY] = stepNode;
                 if (stepX == endX && stepY == endY) {
                     return stepNode;
                 }
@@ -57,32 +59,26 @@ dt.astar = {
                 var distance2 = existNode.srcDistance;
                 if (distance1 < distance2) {
                     existNode.srcDistance = distance1;
+                    existNode.parent = node;
                     self._heapifyUpward(heap, existNode.indexInHeap);
                 }
             }
         };
-        var recon = function (node) {
-            var n = undefined;
-            visited[node.x * 10000 + node.y] = true;
-            n = sniffer(node, 0, 1);
-            if (!dt.isUndefined(n)) return n;
-            n = sniffer(node, 0, -1);
-            if (!dt.isUndefined(n)) return n;
-            n = sniffer(node, 1, 0);
-            if (!dt.isUndefined(n)) return n;
-            n = sniffer(node, -1, 0);
-            if (!dt.isUndefined(n)) return n;
-            return undefined;
-        };
 
         var finalNode = undefined;
         while (heap.length > 0) {
-            var n = this._heapPop(heap);
-            delete heapNodes[n.x * 10000 + n.y];
-            finalNode = recon(n);
-            if (!dt.isUndefined(finalNode)) {
-                break;
-            }
+            var head = this._heapPop(heap);
+            delete heapNodes[head.x * 10000 + head.y];
+            deadends[head.x * 10000 + head.y] = true;
+
+            finalNode = sniffer(head, 1, 0);
+            if (!dt.isUndefined(finalNode)) break;
+            finalNode = sniffer(head, -1, 0);
+            if (!dt.isUndefined(finalNode)) break;
+            finalNode = sniffer(head, 0, 1);
+            if (!dt.isUndefined(finalNode)) break;
+            finalNode = sniffer(head, 0, -1);
+            if (!dt.isUndefined(finalNode)) break;
         }
 
         if (!dt.isUndefined(finalNode)) {
@@ -96,6 +92,7 @@ dt.astar = {
                     x: stepback.x,
                     y: stepback.y
                 })
+                stepback = stepback.parent;
             }
             ret.pop();
             ret.reverse();
@@ -124,18 +121,18 @@ dt.astar = {
     },
 
     _heapSwap: function (heap, idx1, idx2) {
-        dt.suger.swap(heap, idx1, idx2);
         heap[idx1].indexInHeap = idx2;
         heap[idx2].indexInHeap = idx1;
+        dt.suger.swap(heap, idx1, idx2);
     },
 
     _heapifyUpward: function (heap, fromIdx) {
+        var self = this;
         var worker = function (idx) {
             if (idx != 0) {
                 var parentIdx = Math.floor(idx / 2);
-                if ((heap[idx].srcDistance + heap[idx].dstDistance)
-                    < (heap[parentIdx].srcDistance + heap[parentIdx].dstDistance)) {
-                    this._heapSwap(heap, idx, parentIdx);
+                if (self._heapNodeCompare(heap[idx], heap[parentIdx])) {
+                    self._heapSwap(heap, idx, parentIdx);
                     worker(parentIdx);
                 }
             }
@@ -143,7 +140,22 @@ dt.astar = {
         worker(fromIdx);
     },
 
+    _heapNodeCompare: function (lhr, rhr) {
+        var d1 = lhr.srcDistance + lhr.dstDistance;
+        var d2 = rhr.srcDistance + rhr.dstDistance;
+        if (d1 < d2) {
+            return true;
+        }
+        else if (d1 > d2) {
+            return false;
+        }
+        else {
+            return lhr.dstDistance < rhr.dstDistance;
+        }
+    },
+
     _heapifyDownward: function (heap, fromIdx) {
+        var self = this;
         var worker = function (idx) {
             var lcIdx = idx * 2;
             var rcIdx = idx * 2 + 1;
@@ -151,24 +163,19 @@ dt.astar = {
                 return;
             }
             else if (rcIdx >= heap.length) {
-                var d1 = heap[idx].srcDistance + heap[idx].dstDistance;
-                var d2 = heap[lcIdx].srcDistance + heap[lcIdx].dstDistance;
-                if (d2 < d1) {
-                    this._heapSwap(heap, idx, lcIdx);
+                if (self._heapNodeCompare(heap[idx], heap[lcIdx])) {
+                    self._heapSwap(heap, idx, lcIdx);
                     worker(lcIdx);
                 }
             }
             else {
-                var d1 = heap[idx].srcDistance + heap[idx].dstDistance;
-                var d2 = heap[lcIdx].srcDistance + heap[lcIdx].dstDistance;
-                var d3 = heap[rcIdx].srcDistance + heap[rcIdx].dstDistance;
-                if (d2 < d1 || d3 < d1) {
-                    if (d2 < d3) {
-                        this._heapSwap(heap, idx, lcIdx);
+                if (self._heapNodeCompare(heap[idx], heap[lcIdx]) || self._heapNodeCompare(heap[idx], heap[rcIdx])) {
+                    if (self._heapNodeCompare(heap[lcIdx], heap[rcIdx])) {
+                        self._heapSwap(heap, idx, lcIdx);
                         worker(lcIdx);
                     }
                     else {
-                        this._heapSwap(heap, idx, rcIdx);
+                        self._heapSwap(heap, idx, rcIdx);
                         worker(rcIdx);
                     }
                 }

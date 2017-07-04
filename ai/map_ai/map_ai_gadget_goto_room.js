@@ -12,13 +12,14 @@ dt.registerClassInheritance('dt.AIGadget', function () {
             var self = this;
             var player = this.aiRef.getAbacusRef().playerStat;
             var mapLevel = this.aiRef.getAbacusRef().mapStat.mapLevel;
+            var unvisitedRooms = this.aiRef.getAbacusRef().mapStat.unvisitedRooms;
             var curRoom = mapLevel.getRoomByTile(player.posX, player.posY);
 
             var roomIds = Object.keys(mapLevel.roomDict);
             var todoList = [];
             roomIds.forEach(function (rid) {
                 var isCurRoom = (!dt.isUndefined(curRoom) && rid === curRoom.roomId);
-                var isUnvisited = (!dt.isUndefined(self.aiRef.unvisitedRooms[rid]));
+                var isUnvisited = (!dt.isUndefined(unvisitedRooms[rid]));
                 if (isCurRoom) {
                     return;
                 }

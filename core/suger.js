@@ -34,15 +34,17 @@ dt.isFunction = function (obj) {
     return typeof obj === 'function';
 };
 
+dt.print = function (any) {
+    if (dt.isArray(any) || dt.isObject(any)) {
+        console.log(JSON.stringify(any, null, 2));
+    }
+    else {
+        console.log(any);
+    }
+};
+
 dt.suger = {
-    print: function (any) {
-        if (this.isArray(any) || this.isObject(any)) {
-            console.log(JSON.stringify(any, null, 2));
-        }
-        else {
-            console.log(any);
-        }
-    },
+
 
     genArray: function (size, defaultValue) {
         var ret = new Array(size);
@@ -104,13 +106,13 @@ dt.suger = {
             return obj.__proto__ == atom;
         };
 
-        if (self.isObject(obj) && isPOD(obj)) {
+        if (dt.isObject(obj) && isPOD(obj)) {
             ret = {};
             obj.keys().forEach(function (k) {
                 ret[k] = obj[k];
             });
         }
-        else if (self.isArray(obj)) {
+        else if (dt.isArray(obj)) {
             ret = obj.filter(function () {
                 return true;
             });
@@ -128,11 +130,11 @@ dt.suger = {
             return obj.__proto__ == atom;
         };
 
-        if (self.isObject(obj)) {
+        if (dt.isObject(obj)) {
             dt.assert(isPOD(obj));
             destination = self.isUndefined(destination) ? {} : destination;
         }
-        else if (self.isArray(obj)) {
+        else if (dt.isArray(obj)) {
             destination = self.isUndefined(destination) ? [] : destination;
         }
         else {
@@ -157,7 +159,7 @@ dt.suger = {
             else if (self.isUndefined(src)) {
                 return undefined;
             }
-            else if (self.isObject(src)) {
+            else if (dt.isObject(src)) {
                 dst = dst || {};
                 src.keys().forEach(function (k) {
                     if (!keyFilter(k, src[k])) return;
@@ -166,7 +168,7 @@ dt.suger = {
                     }
                 });
             }
-            else if (self.isArray(src)) {
+            else if (dt.isArray(src)) {
                 dst = dst || [];
                 src.forEach(function (item, idx) {
                     dst.push(arrayMorpher(doCopy(item), idx));

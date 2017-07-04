@@ -13,12 +13,7 @@ dt.mapAIStrategy = {
 dt.mapAIDecisionCode = {
     IDLE: 0,
     MOVE: 1,
-    HESITATE: 2,
-    RAID_MONSTER: 3,
-    EVADE_MONSTER: 4,
-    DISARM_TRAP: 5,
-    TREAD_TRAP: 6,
-    EVADE_TRAP: 7
+    GOTO_NEXT_MAP: 2
 };
 
 dt.monsterRelativeDangerLevel = {
@@ -42,11 +37,10 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 new dt.MapAIGadgetGotoMonster(this),
                 new dt.MapAIGadgetGotoStair(this)
             ];
-            var unvisitedRooms = {};
-            abacusRef.mapStat.mapLevel.getRooms().forEach(function (x) {
-                unvisitedRooms[x.roomId] = x;
-            });
-            this.unvisitedRooms = unvisitedRooms;
+        },
+
+        getAbacusRef: function () {
+            return this._abacusRef;
         },
 
         getStrategy: function () {
@@ -56,66 +50,11 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         tick: function () {
             for (var i = 0; i < this._AIGadgetPriorityList.length; i++) {
                 var decisions = this._AIGadgetPriorityList[i].getDecisions();
-                if (!dt.isUndefined(decisions)){
+                if (!dt.isUndefined(decisions)) {
                     return decisions;
                 }
             }
             dt.assert(false);
-        },
-
-        decideRaidMonster: function (monster) {
-            var riskLevel = this.calculateMonsterRiskLevel(this.getAbacusRef().playerStat.teamData, monster);
-            if (riskLevel <= dt.monsterRelativeDangerLevel.EASY) {
-                return [dt.mapAIDecisionCode.RAID_MONSTER];
-            }
-            else {
-                switch (this._strategy) {
-                    case dt.mapAIStrategy.FULL_AGGRESIVE:
-                        return 0;
-                    case dt.mapAIStrategy.MEDIUM_AGGRESIVE:
-                        return this._doCoreCalculate_Monster(0.75, riskLevel) ? 1 : 2;
-                    case dt.mapAIStrategy.NORMAL:
-                        return this._doCoreCalculate_Monster(0.5, riskLevel) ? 1 : 2;
-                    case dt.mapAIStrategy.MEDIUM_COWARD:
-                        return this._doCoreCalculate_Monster(0.25, riskLevel) ? 1 : 2;
-                    case dt.mapAIStrategy.FULL_COWARD:
-                        return 2;
-                    default:
-                        dt.assert(false);
-                }
-            }
-        },
-
-        _doCoreCalculate_Monster: function (p, riskLevel) {
-            //todo
-            return true;
-        },
-
-        _doCoreCalculate_Trap: function (p) {
-            //todo
-            return true;
-        },
-
-        calculateMonsterRiskLevel: function (teamData, monster) {
-            //todo
-            return dt.monsterRelativeDangerLevel.NORMAL;
-        },
-
-        decideTreadoverTrap: function () {
-            switch (this._strategy) {
-                case dt.mapAIStrategy.FULL_AGGRESIVE:
-                    return 0;
-                case dt.mapAIStrategy.MEDIUM_AGGRESIVE:
-                    return this._doCoreCalculate_Monster(0.75) ? 1 : 2;
-                case dt.mapAIStrategy.NORMAL:
-                    return this._doCoreCalculate_Monster(0.5) ? 1 : 2;
-                case dt.mapAIStrategy.MEDIUM_COWARD:
-                    return this._doCoreCalculate_Monster(0.25) ? 1 : 2;
-                case dt.mapAIStrategy.FULL_COWARD:
-                    return 2;
-                default:
-                    dt.assert(false);
-            }
         }
     });
 });
