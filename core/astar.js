@@ -126,11 +126,23 @@ dt.astar = {
         dt.suger.swap(heap, idx1, idx2);
     },
 
+    _parentIdx: function (x) {
+        return Math.floor((x + 1) / 2) - 1;
+    },
+
+    _leftChildIdx: function (x) {
+        return (x + 1) * 2 - 1;
+    },
+
+    _rightChildIdx: function (x) {
+        return (x + 1) * 2;
+    },
+
     _heapifyUpward: function (heap, fromIdx) {
         var self = this;
         var worker = function (idx) {
             if (idx != 0) {
-                var parentIdx = Math.floor(idx / 2);
+                var parentIdx = self._parentIdx(idx);
                 if (self._heapNodeCompare(heap[idx], heap[parentIdx])) {
                     self._heapSwap(heap, idx, parentIdx);
                     worker(parentIdx);
@@ -157,8 +169,8 @@ dt.astar = {
     _heapifyDownward: function (heap, fromIdx) {
         var self = this;
         var worker = function (idx) {
-            var lcIdx = idx * 2;
-            var rcIdx = idx * 2 + 1;
+            var lcIdx = self._leftChildIdx(idx);
+            var rcIdx = self._rightChildIdx(idx);
             if (lcIdx >= heap.length) {
                 return;
             }

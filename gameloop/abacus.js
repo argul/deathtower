@@ -3,7 +3,7 @@
  */
 
 dt.behaviorCode = {
-    DIE: 0,
+    ENTER_MAP: 0,
     MOVE: 1,
     GOTO_NEXT_MAP: 2,
     HESITATE: 3,
@@ -64,6 +64,13 @@ dt.registerClassInheritance('dt.Class', function () {
                 unvisitedRooms[x.roomId] = x;
             });
             this.mapStat.unvisitedRooms = unvisitedRooms;
+
+            this.behaviors.push({
+                behaviorCode: dt.behaviorCode.ENTER_MAP,
+                x: stairs.down.x,
+                y: stairs.down.y,
+                tiles: mapLevel.tiles
+            });
         },
 
         getRandom: function () {

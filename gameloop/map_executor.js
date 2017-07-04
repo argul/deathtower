@@ -86,6 +86,8 @@ dt.registerClassInheritance('dt.Class', function () {
                 x: moveToX,
                 y: moveToY
             });
+
+            return ret;
         },
 
         _moveToLoot: function (mapStat, playerStat, moveToX, moveToY) {
@@ -115,6 +117,8 @@ dt.registerClassInheritance('dt.Class', function () {
                 fromType: mapStat.mapLevel.getTile(moveToX, moveToY),
                 toType: mapStat.mapLevel.isTileInRoom(moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
             });
+
+            return ret;
         },
 
         _moveToTreasure: function (mapStat, playerStat, moveToX, moveToY) {
@@ -144,6 +148,8 @@ dt.registerClassInheritance('dt.Class', function () {
                 fromType: dt.mapconst.TILE_TREASURE,
                 toType: mapStat.mapLevel.isTileInRoom(moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
             });
+
+            return ret;
         },
 
         _moveToMonster: function (mapStat, playerStat, moveToX, moveToY) {
@@ -202,6 +208,7 @@ dt.registerClassInheritance('dt.Class', function () {
                 ret.interrupt = true;
                 ret.map2battle = true;
             }
+            return ret;
         },
 
         _moveToMonster2: function (mapStat, playerStat, moveToX, moveToY) {
@@ -228,6 +235,7 @@ dt.registerClassInheritance('dt.Class', function () {
             ret.behaviors.push({
                 behaviorCode: dt.behaviorCode.ENTER_BATTLE
             });
+            return ret;
         },
 
         _moveToTrap: function (mapStat, playerStat, moveToX, moveToY) {
@@ -304,6 +312,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     ret.interrupt = true;
                 }
             }
+            return ret;
         },
 
         _moveToTrap2: function (mapStat, playerStat, moveToX, moveToY) {
@@ -327,6 +336,7 @@ dt.registerClassInheritance('dt.Class', function () {
                 y: moveToY,
                 trap: trap
             });
+            return ret;
         }
     });
 });

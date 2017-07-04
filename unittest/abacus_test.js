@@ -3,6 +3,19 @@
  */
 
 dt.abacus_test = function () {
+    var mapConfig = {
+        width: 35,
+        height: 35,
+        minRoomNumber: 7,
+        maxRoomNumber: 10,
+        minRoomWidth: 7,
+        maxRoomWidth: 11,
+        minRoomHeight: 5,
+        maxRoomHeight: 11,
+        scatterRoomTrys: 30,
+        doorNumProbability: [0.4, 0.4, 0.15, 0.05]
+    };
+
     var ins = new dt.Abacus({
         seed: 0,
         mapConfig: mapConfig,
@@ -14,7 +27,7 @@ dt.abacus_test = function () {
     var tmp = [];
     do {
         var b = ins.tick();
-        t.push(b);
+        tmp.push(b);
     } while (b.behaviorCode != dt.behaviorCode.DIE && b.behaviorCode != dt.behaviorCode.GOTO_NEXT_MAP);
     dt.print(tmp);
 };
