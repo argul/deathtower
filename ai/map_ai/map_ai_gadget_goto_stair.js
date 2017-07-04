@@ -19,7 +19,7 @@ dt.registerClassInheritance('dt.AIGadget', function () {
                     t.aicode = dt.mapAIDecisionCode.MOVE;
                 });
                 path.push({
-                    aicode: dt.mapAIDecisionCode.GOTO_NEXT_MAP
+                    aicode: dt.mapAIDecisionCode.LEAVE_MAP
                 });
                 return path;
             }

@@ -3,9 +3,10 @@
  */
 
 dt.behaviorCode = {
+    DEFEATED: -1,
     ENTER_MAP: 0,
     MOVE: 1,
-    GOTO_NEXT_MAP: 2,
+    LEAVE_MAP: 2,
     HESITATE: 3,
     LOOT: 4,
     OPEN_TREASURE: 5,
@@ -15,7 +16,6 @@ dt.behaviorCode = {
     DISARM_TRAP_SUCCESS: 9,
     DISARM_TRAP_FAILED: 10,
     TRAP_ACTIVATE: 11,
-
 
     CHANGE_TILE_TYPE: 2000,
     ENTER_BATTLE: 2001,

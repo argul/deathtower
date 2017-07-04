@@ -28,6 +28,6 @@ dt.abacus_test = function () {
     do {
         var b = ins.tick();
         tmp.push(b);
-    } while (b.behaviorCode != dt.behaviorCode.DIE && b.behaviorCode != dt.behaviorCode.GOTO_NEXT_MAP);
-    dt.print(tmp);
+    } while (b.behaviorCode != dt.behaviorCode.LEAVE_MAP);
+    dt.print(tmp.length);
 };

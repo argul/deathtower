@@ -30,7 +30,7 @@ dt.registerClassInheritance('dt.Class', function () {
                 case dt.mapAIDecisionCode.MOVE:
                     return this._executeMove(decision.x, decision.y);
                     break;
-                case dt.mapAIDecisionCode.GOTO_NEXT_MAP:
+                case dt.mapAIDecisionCode.LEAVE_MAP:
                     return this._executeGotoNextMap();
                     break;
                 default:
@@ -61,7 +61,7 @@ dt.registerClassInheritance('dt.Class', function () {
             return {
                 interrupt: false,
                 behaviors: [{
-                    behaviorCode: dt.behaviorCode.GOTO_NEXT_MAP
+                    behaviorCode: dt.behaviorCode.LEAVE_MAP
                 }]
             };
         },
