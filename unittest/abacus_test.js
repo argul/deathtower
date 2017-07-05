@@ -29,5 +29,5 @@ dt.abacus_test = function () {
         var b = ins.tick();
         tmp.push(b);
     } while (b.behaviorCode != dt.behaviorCode.LEAVE_MAP);
-    dt.print(tmp.length);
+    dt.print(tmp);
 };
