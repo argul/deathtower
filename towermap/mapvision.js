@@ -104,7 +104,7 @@ dt.mapvision = {
                 var mapX = canvas2mapX(canvasX);
                 var mapY = canvas2mapY(canvasY);
 
-                if (mapLevel.fogs[mapY][mapX]) {
+                if (mapLevel.isFog(mapX, mapY)) {
                     ret.push({
                         x: mapX,
                         y: mapY

@@ -25,6 +25,8 @@ dt.registerClassInheritance('dt.Class', function () {
             var stairs = dt.mapassemble.makeStairs(mapLevel, this.ctx);
             this.map.upstair = stairs.up;
             this.map.downstair = stairs.down;
+            this.map.visibleListX = [];
+            this.map.visibleListY = [];
 
             this.mapAI = new dt.MapAI(this);
             this.mapExecutor = new dt.MapExecutor(this);
@@ -39,6 +41,22 @@ dt.registerClassInheritance('dt.Class', function () {
                 y: stairs.down.y,
                 mapLevel: mapLevel
             });
+
+            var self = this;
+            var lighten = dt.mapvision.ferret(mapLevel, stairs.down.x, stairs.down.y, 3);
+            if (lighten.length > 0) {
+                var b = {
+                    behaviorCode: dt.behaviorCode.UPDATE_MAP,
+                    fogs: []
+                };
+                lighten.forEach(function (xy) {
+                    mapLevel.clearFog(xy.x, xy.y);
+                    b.fogs.push(xy);
+                    self.visibleListX.push(xy.x);
+                    self.visibleListY.push(xy.y);
+                });
+                this.behaviors.push(b);
+            }
         },
 
         tick: function () {

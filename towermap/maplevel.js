@@ -15,12 +15,12 @@ dt.registerClassInheritance('dt.Class', function () {
             this._tile2room = {};
         },
 
-        getWidth: function () {
-            return this.width;
+        isFog: function (x, y) {
+            return this.fogs[y][x];
         },
 
-        getHeight: function () {
-            return this.height;
+        clearFog: function (x, y) {
+            this.fogs[y][x] = false;
         },
 
         addRoom: function (r) {

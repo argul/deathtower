@@ -27,6 +27,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         },
 
         makeDecision: function () {
+            
             dt.assert(false);
         }
     });
