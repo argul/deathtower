@@ -12,12 +12,6 @@ dt.mapvision = {
         var canvas2mapY = function (y) {
             return posY - range + y;
         };
-        var map2canvasX = function (x) {
-            return x + range - posX;
-        };
-        var map2canvasY = function (y) {
-            return y + range - posY;
-        };
 
         for (var i = 0; i < range * 2 + 1; i++) {
             for (var j = 0; j < range * 2 + 1; j++) {

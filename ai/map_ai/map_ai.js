@@ -10,50 +10,23 @@ dt.mapAIStrategy = {
     FULL_COWARD: 4
 };
 
-dt.mapAIDecisionCode = {
-    IDLE: 0,
+dt.mapAICode = {
     MOVE: 1,
-    GOTO_NEXT_MAP: 2
-};
-
-dt.monsterRelativeDangerLevel = {
-    VERY_EASY: 0,
-    EASY: 1,
-    NORMAL: 2,
-    HARD: 3,
-    VERY_HARD: 4,
-    TREMONDOUS_RISKY: 5
+    USE_ITEM: 2,
+    GOTO_NEXT_MAP: 3
 };
 
 dt.registerClassInheritance('dt.AIInterface', function () {
     dt.MapAI = dt.AIInterface.extend({
-        ctor: function (abacusRef, strategy) {
+        ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
-            this._strategy = strategy;
-            this._AIGadgetPriorityList = [
-                new dt.MapAIGadgetExploreRoom(this),
-                new dt.MapAIGadgetGotoRoom(this),
-                new dt.MapAIGadgetGotoLoot(this),
-                new dt.MapAIGadgetGotoMonster(this),
-                new dt.MapAIGadgetGotoStair(this)
-            ];
         },
 
         getAbacusRef: function () {
             return this._abacusRef;
         },
 
-        getStrategy: function () {
-            return this._strategy;
-        },
-
-        tick: function () {
-            for (var i = 0; i < this._AIGadgetPriorityList.length; i++) {
-                var decisions = this._AIGadgetPriorityList[i].getDecisions();
-                if (!dt.isUndefined(decisions)) {
-                    return decisions;
-                }
-            }
+        makeDecision: function () {
             dt.assert(false);
         }
     });

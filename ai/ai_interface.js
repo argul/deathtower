@@ -8,7 +8,7 @@ dt.registerClassInheritance('dt.Class', function () {
             dt.assert(false);
         },
 
-        tick: function () {
+        makeDecision: function () {
             dt.assert(false);
         }
     });

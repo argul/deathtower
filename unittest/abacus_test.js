@@ -16,18 +16,21 @@ dt.abacus_test = function () {
         doorNumProbability: [0.4, 0.4, 0.15, 0.05]
     };
 
-    var ins = new dt.Abacus({
+    var ins = new dt.AbacusGameloop({
+        abacusId: 'test',
         seed: 0,
         mapConfig: mapConfig,
         maxLevel: 20,
-        playerData: {},
-        userData: {}
+        teamEnterData: new dt.TeamEnterData(),
+        customized: {
+            strategy: dt.mapAIStrategy.NORMAL
+        }
     });
 
     var tmp = [];
     do {
         var b = ins.tick();
         tmp.push(b);
-    } while (b.behaviorCode != dt.behaviorCode.LEAVE_MAP);
+    } while (b.behaviorCode != dt.behaviorCode.DEFEATED && b.behaviorCode != dt.behaviorCode.LEAVE_TOWER);
     dt.print(tmp);
 };
