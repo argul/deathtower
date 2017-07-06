@@ -5,21 +5,18 @@
 dt.behaviorCode = {
     DEFEATED: 'DEFEATED',
     ENTER_MAP: 'ENTER_MAP',
-    MOVE: 'MOVE',
     LEAVE_MAP: 'LEAVE_MAP',
-    HESITATE: 'HESITATE',
-    LOOT: 'LOOT',
-    OPEN_TREASURE: 'OPEN_TREASURE',
+    MOVE: 'MOVE',
+    HESITATE_POSITIVE: 'HESITATE_POSITIVE',
+    HESITATE_NEGATIVE: 'HESITATE_NEGATIVE',
+    LOOT_EQUIPMENT: 'LOOT_EQUIPMENT',
+    LOOT_ITEM: 'LOOT_ITEM',
+    OPEN_TREASURE_BOX: 'OPEN_TREASURE_BOX',
+    ANIM_TREASURE_BOX_CONTENT: 'ANIM_TREASURE_BOX_CONTENT',
     GET_TREASURE_LOOTS: 'GET_TREASURE_LOOTS',
-    RAID_MONSTER: 'RAID_MONSTER',
-    DISARM_TRAP: 'DISARM_TRAP',
-    DISARM_TRAP_SUCCESS: 'DISARM_TRAP_SUCCESS',
-    DISARM_TRAP_FAILED: 'DISARM_TRAP_FAILED',
-    TRAP_ACTIVATE: 'TRAP_ACTIVATE',
 
-    CHANGE_TILE_TYPE: 'CHANGE_TILE_TYPE',
-    ENTER_BATTLE: 'ENTER_BATTLE',
-    LEAVE_BATTLE: 'LEAVE_BATTLE'
+
+    UPDATE_MAP: 'UPDATE_MAP',
 };
 
 dt.registerClassInheritance('dt.Class', function () {
@@ -60,7 +57,7 @@ dt.registerClassInheritance('dt.Class', function () {
             this.curExecutor = this.mapExecutor;
 
             var unvisitedRooms = {};
-            this.mapStat.mapLevel.getRooms().forEach(function (x) {
+            this.mapStat.mapLevel.getRoomArr().forEach(function (x) {
                 unvisitedRooms[x.roomId] = x;
             });
             this.mapStat.unvisitedRooms = unvisitedRooms;

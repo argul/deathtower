@@ -115,10 +115,14 @@ dt.registerClassInheritance('dt.Class', function () {
                 x: moveToX,
                 y: moveToY,
                 fromType: mapStat.mapLevel.getTile(moveToX, moveToY),
-                toType: mapStat.mapLevel.isTileInRoom(moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
+                toType: this._isTileInRoom(mapStat.mapLevel, moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
             });
 
             return ret;
+        },
+
+        _isTileInRoom: function (mapLevel, x, y) {
+            return !dt.isUndefined(mapLevel.getRoomByTile(x, y));
         },
 
         _moveToTreasure: function (mapStat, playerStat, moveToX, moveToY) {
@@ -146,7 +150,7 @@ dt.registerClassInheritance('dt.Class', function () {
                 x: moveToX,
                 y: moveToY,
                 fromType: dt.mapconst.TILE_TREASURE,
-                toType: mapStat.mapLevel.isTileInRoom(moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
+                toType: this._isTileInRoom(mapStat.mapLevel, moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
             });
 
             return ret;
@@ -258,7 +262,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     x: moveToX,
                     y: moveToY,
                     fromType: dt.mapconst.TILE_TRAP,
-                    toType: mapStat.mapLevel.isTileInRoom(moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
+                    toType: this._isTileInRoom(mapStat.mapLevel, moveToX, moveToY) ? dt.mapconst.TILE_CORRIDOR : dt.mapconst.TILE_ROOMFLOOR
                 });
 
                 playerStat.posX = moveToX;

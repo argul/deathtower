@@ -26,10 +26,10 @@ dt.astar = {
             else if (!dt.isUndefined(deadends[x * 10000 + y])) return false;
             else {
                 if (dt.isFunction(judgeConnect)) {
-                    return judgeConnect(mapLevel.getTile(x, y));
+                    return judgeConnect(mapLevel, x, y);
                 }
                 else {
-                    return mapLevel.getTile(x, y) < dt.mapconst.TILE_PASS;
+                    return mapLevel.getTile(x, y) < dt.mapconst.TILE_NOPASS;
                 }
             }
         };
@@ -91,7 +91,7 @@ dt.astar = {
                 ret.push({
                     x: stepback.x,
                     y: stepback.y
-                })
+                });
                 stepback = stepback.parent;
             }
             ret.pop();

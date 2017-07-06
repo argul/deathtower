@@ -96,15 +96,8 @@ dt.mapgen = {
         else return true;
     },
 
-    _checkPointInRoom: function (x, y, room) {
-        return x >= room.x
-            && x <= room.x + room.width
-            && y >= room.y
-            && y <= room.y + room.height;
-    },
-
     _carveMaze: function (paramPack) {
-        var todos = this._getMeshSlots(paramPack.mapConfig, paramPack.mapLevel.getRooms());
+        var todos = this._getMeshSlots(paramPack.mapConfig, paramPack.mapLevel.getRoomArr());
         var mazeStack = [];
         var visited = {};
         var tkeys = dt.suger.getKeys(todos);
@@ -172,7 +165,7 @@ dt.mapgen = {
 
     _openDoors: function (paramPack) {
         var self = this;
-        paramPack.mapLevel.getRooms().forEach(function (r) {
+        paramPack.mapLevel.getRoomArr().forEach(function (r) {
             var canBeDoors = [];
             if (r.y > 0) { //bottom walls
                 for (var i = 1; i < r.width - 1; i++) {

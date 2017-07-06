@@ -15,7 +15,9 @@ dt.registerClassInheritance('dt.AIGadget', function () {
             var unvisitedRooms = this.aiRef.getAbacusRef().mapStat.unvisitedRooms;
             var curRoom = mapLevel.getRoomByTile(player.posX, player.posY);
 
-            var roomIds = Object.keys(mapLevel.roomDict);
+            var roomIds = mapLevel.getRoomArr().map(function (x) {
+                return x.roomId;
+            });
             var todoList = [];
             roomIds.forEach(function (rid) {
                 var isCurRoom = (!dt.isUndefined(curRoom) && rid === curRoom.roomId);

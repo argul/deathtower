@@ -8,9 +8,11 @@ dt.registerClassInheritance('dt.Class', function () {
             this.width = width;
             this.height = height;
             this.tiles = dt.suger.genMatrix2D(width, height, dt.mapconst.TILE_WALL);
+            this.fogs = dt.suger.genMatrix2D(width, height, true);
+            this.contents = dt.suger.genMatrix2D(width, height, undefined);
             this.rooms = [];
             this.roomDict = {};
-            this.tile2room = {};
+            this._tile2room = {};
         },
 
         getWidth: function () {
@@ -27,21 +29,21 @@ dt.registerClassInheritance('dt.Class', function () {
             for (var i = 1; i < r.width - 1; i++) {
                 for (var j = 1; j < r.height - 1; j++) {
                     this.setTile(r.x + i, r.y + j, dt.mapconst.TILE_ROOMFLOOR);
-                    this.tile2room[(r.x + i) * 10000 + r.y + j] = r;
+                    this._tile2room[(r.x + i) * 10000 + r.y + j] = r;
                 }
             }
         },
 
-        getRooms: function () {
+        getRoomArr: function () {
             return this.rooms;
         },
 
-        getRoomByTile: function (x, y) {
-            return this.tile2room[x * 10000 + y];
+        getRoomDict: function () {
+            return this.roomDict;
         },
 
-        isTileInRoom: function (x, y) {
-            return !dt.isUndefined(this.getRoomByTile(x, y));
+        getRoomByTile: function (x, y) {
+            return this._tile2room[x * 10000 + y];
         },
 
         getTile: function (x, y) {
@@ -65,6 +67,14 @@ dt.registerClassInheritance('dt.Class', function () {
                     f(r.x + i, r.y + j, this.getTile(r.x + i, r.y + j));
                 }
             }
+        },
+
+        getContent: function (x, y) {
+            return this.contents[y][x];
+        },
+
+        isEmptyTile: function (x, y) {
+            return dt.isUndefined(this.getContent(x, y));
         }
     });
 });

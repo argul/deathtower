@@ -44,8 +44,6 @@ dt.print = function (any) {
 };
 
 dt.suger = {
-
-
     genArray: function (size, defaultValue) {
         var ret = new Array(size);
         for (var i = 0; i < size; i++) {

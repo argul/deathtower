@@ -10,7 +10,7 @@ dt.mapassemble = {
                 availList.push(x * 10000 + y);
             }
         });
-        mapLevel.getRooms().forEach(function (r) {
+        mapLevel.getRoomArr().forEach(function (r) {
             for (var i = r.x + 1; i <= r.x + r.width - 2; i++) {
                 availList.push(i * 10000 + r.y + 1);
                 availList.push(i * 10000 + r.y + r.height - 2);
