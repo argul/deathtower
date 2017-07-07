@@ -25,11 +25,17 @@ dt.registerClassInheritance('dt.Class', function () {
             var stairs = dt.mapassemble.makeStairs(mapLevel, this.ctx);
             this.map.upstair = stairs.up;
             this.map.downstair = stairs.down;
-            this.map.visibleListX = [];
-            this.map.visibleListY = [];
+            this.map.teamX = stairs.down.x;
+            this.map.teamY = stairs.down.y;
 
             this.mapAI = new dt.MapAI(this);
-            this.mapExecutor = new dt.MapExecutor(this);
+            this.beads = {
+                interrupt: false
+            };
+            this.mapExecutors = {};
+            this.mapExecutors[dt.mapAICode.MOVE] = new dt.MapMoveExecutor(this);
+            this.mapExecutors[dt.mapAICode.USE_ITEM] = undefined;
+            this.mapExecutors[dt.mapAICode.MOVE_TO_UPSTAIR] = new dt.MapMoveToUpstairExecutor(this);
 
             this.behaviors.push({
                 behaviorCode: dt.behaviorCode.ENTER_TOWER
@@ -52,8 +58,6 @@ dt.registerClassInheritance('dt.Class', function () {
                 lighten.forEach(function (xy) {
                     mapLevel.clearFog(xy.x, xy.y);
                     b.fogs.push(xy);
-                    self.visibleListX.push(xy.x);
-                    self.visibleListY.push(xy.y);
                 });
                 this.behaviors.push(b);
             }
@@ -61,11 +65,27 @@ dt.registerClassInheritance('dt.Class', function () {
 
         tick: function () {
             var self = this;
+            self.beads.interrupt = false;
             while (this.behaviors.length <= 0) {
                 var decisions = this.mapAI.tick();
+
                 for (var i = 0; i < decisions.length; i++) {
-                    var result = self.mapExecutor.execute(decisions[i]);
-                    self.behaviors = self.behaviors.concat(result);
+                    var executor = this.mapExecutors[decisions[i].aicode];
+                    executor.init(decisions[i]);
+
+                    while (!executor.isDoneExecution()) {
+                        var results = executor.tickExecute();
+                        self.behaviors = self.behaviors.concat(results)
+                        if (self.beads.interrupt) {
+                            break;
+                        }
+                    }
+
+                    executor.reset();
+
+                    if (self.beads.interrupt) {
+                        break;
+                    }
                 }
             }
             dt.assert(this.behaviors.length > 0);

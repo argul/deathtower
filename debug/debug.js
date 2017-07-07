@@ -8,6 +8,10 @@ dt.assert = function (c) {
     }
 };
 
+dt.unixtime = function () {
+    return new Date().getTime();
+};
+
 dt.debug = {
     isStrict: function () {
         return true;
@@ -34,6 +38,12 @@ dt.debug = {
         }
     },
 
+    dumpPref: function (token, f) {
+        var stub = dt.unixtime();
+        f();
+        dt.print('[dumpPref][' + token + ']:' + (dt.unixtime() - stub));
+    },
+
     dumpAscIIMap: function (mapLevel) {
         var asciiMap = dt.suger.shallowCopy(mapLevel.tiles);
         asciiMap.reverse();
@@ -54,6 +64,34 @@ dt.debug = {
                         return '↓';
                     default:
                         return x;
+                }
+            });
+            dt.print(line.join(''));
+        });
+        dt.print('==========================================');
+    },
+
+    dumpDijkstraResult: function (result) {
+        var asciiMap = dt.suger.shallowCopy(result);
+        asciiMap.reverse();
+
+        dt.print('==========================================');
+        asciiMap.forEach(function (line) {
+            line = line.map(function (x) {
+                if (x < 0) {
+                    return '####'
+                }
+                else {
+                    x = x.toString();
+                    if (x.length == 1) {
+                        return '  ' + x + ' ';
+                    }
+                    else if (x.length == 2) {
+                        return ' ' + x + ' ';
+                    }
+                    else {
+                        return x + ' '
+                    }
                 }
             });
             dt.print(line.join(''));

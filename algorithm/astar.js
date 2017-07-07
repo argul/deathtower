@@ -6,6 +6,12 @@ dt.astar = {
     seekPath: function (mapLevel, startX, startY, endX, endY, judgeConnect) {
         if (startX == endX && startY == endY) {
             dt.assert(false);
+            return;
+        }
+        if (!dt.isFunction(judgeConnect)) {
+            judgeConnect = function (x, y) {
+                return mapLevel.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+            };
         }
         var self = this;
         var heap = [{
@@ -24,14 +30,7 @@ dt.astar = {
             if (x < 0 || x > (mapLevel.width - 1)) return false;
             else if (y < 0 || y > (mapLevel.height - 1)) return false;
             else if (!dt.isUndefined(deadends[x * 10000 + y])) return false;
-            else {
-                if (dt.isFunction(judgeConnect)) {
-                    return judgeConnect(mapLevel, x, y);
-                }
-                else {
-                    return mapLevel.getTile(x, y) < dt.mapconst.TILE_NOPASS;
-                }
-            }
+            else return judgeConnect(mapLevel, x, y);
         };
         var sniffer = function (node, offsetX, offsetY) {
             var stepX = node.x + offsetX;
