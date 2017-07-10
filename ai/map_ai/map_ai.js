@@ -12,8 +12,7 @@ dt.mapAIStrategy = {
 
 dt.mapAICode = {
     MOVE: 1,
-    USE_ITEM: 2,
-    MOVE_TO_UPSTAIR: 3
+    USE_ITEM: 2
 };
 
 dt.registerClassInheritance('dt.AIInterface', function () {
@@ -27,7 +26,6 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         },
 
         makeDecision: function () {
-
             dt.assert(false);
         }
     });

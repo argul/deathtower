@@ -6,7 +6,6 @@ dt.registerClassInheritance('dt.Class', function () {
     dt.MapMoveExecutor = dt.Class.extend({
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
-            this._decision = undefined;
             this._moveFuncs = {};
             this._moveFuncs[dt.mapconst.TILE_CORRIDOR] = this._moveToSpace;
             this._moveFuncs[dt.mapconst.TILE_ROOMFLOOR] = this._moveToSpace;
@@ -20,69 +19,16 @@ dt.registerClassInheritance('dt.Class', function () {
             this._moveFuncs[dt.mapconst.TILE_TRAP] = this._moveToTrap;
             this._moveFuncs[dt.mapconst.TILE_MONSTER_AVOID] = this._moveToMonster2;
             this._moveFuncs[dt.mapconst.TILE_TRAP_AVOID] = this._moveToTrap2;
-            this._reset();
         },
 
         getAbacusRef: function () {
             return this._abacusRef;
         },
 
-        init: function (decision) {
+        executeDecision: function (decision) {
             var map = this.getAbacusRef().map;
-            this._reset();
-            this.system32.decision = decision;
-            this.system32.dstX = decision.x;
-            this.system32.dstY = decision.y;
-            this.system32.path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, decision.x, decision.y);
-            dt.assert(this.system32.path);
-            dt.assert(this.system32.path.length > 0);
-        },
-
-        _reset: function () {
-            this.system32 = {
-                done: false
-            };
-        },
-
-        isDoneExecution: function () {
-            return this.system32.done;
-        },
-
-        tickExecute: function () {
-            var map = this.getAbacusRef().map;
-            var next = this.system32.path.shift();
-            var tileContent = map.mapLevel.getContent(next.x, next.y);
-            var mutex = false;
-            if (tileContent.trap) {
-                dt.assert(!mutex);
-                mutex = true;
-            }
-            if (tileContent.monster) {
-                dt.assert(!mutex);
-                mutex = true;
-            }
-            if (tileContent.treasure) {
-                dt.assert(!mutex);
-                mutex = true;
-            }
-            if (tileContent.equipment) {
-                dt.assert(!mutex);
-                mutex = true;
-            }
-            if (tileContent.item) {
-                dt.assert(!mutex);
-                mutex = true;
-            }
-            else {
-                if (dt.debug.isStrict()) {
-                    dt.assert(map.mapLevel.getTile(next.x, next.y) < dt.mapconst.TILE_NOPASS);
-                }
-            }
-
-
-            if (this.system32.path <= 0) {
-                this.system32.done = true;
-            }
+            //todo
+            return [];
         },
 
         _executeMove: function (moveToX, moveToY) {

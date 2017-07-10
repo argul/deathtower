@@ -29,13 +29,16 @@ dt.registerClassInheritance('dt.Class', function () {
             this.map.teamY = stairs.down.y;
 
             this.mapAI = new dt.MapAI(this);
-            this.beads = {
-                interrupt: false
+            this.aifeeder = {
+                visibleLoots: {},
+                visibleMonsters: {},
+                visibleTreasures: {},
+                visibleTraps: {}
             };
+
             this.mapExecutors = {};
             this.mapExecutors[dt.mapAICode.MOVE] = new dt.MapMoveExecutor(this);
             this.mapExecutors[dt.mapAICode.USE_ITEM] = undefined;
-            this.mapExecutors[dt.mapAICode.MOVE_TO_UPSTAIR] = new dt.MapMoveToUpstairExecutor(this);
 
             this.behaviors.push({
                 behaviorCode: dt.behaviorCode.ENTER_TOWER
@@ -64,32 +67,23 @@ dt.registerClassInheritance('dt.Class', function () {
         },
 
         tick: function () {
-            var self = this;
-            self.beads.interrupt = false;
             while (this.behaviors.length <= 0) {
                 var decisions = this.mapAI.tick();
-
                 for (var i = 0; i < decisions.length; i++) {
                     var executor = this.mapExecutors[decisions[i].aicode];
-                    executor.init(decisions[i]);
-
-                    while (!executor.isDoneExecution()) {
-                        var results = executor.tickExecute();
-                        self.behaviors = self.behaviors.concat(results)
-                        if (self.beads.interrupt) {
-                            break;
-                        }
-                    }
-
-                    executor.reset();
-
-                    if (self.beads.interrupt) {
-                        break;
-                    }
+                    this.behaviors = this.behaviors.concat(executor.executeDecision(decisions[i]));
                 }
             }
             dt.assert(this.behaviors.length > 0);
             return this.behaviors.shift();
+        },
+
+        _clearFog: function (x, y) {
+            this.map.mapLevel.clearFog(x, y);
+            var content = this.map.mapLevel.getContent(x, y);
+            if (dt.isUndefined(content)) {
+                return;
+            }
         }
     });
 });
