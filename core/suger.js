@@ -229,5 +229,26 @@ dt.builtInExtension = function () {
             }
         };
     }
+    if (!Object.prototype.values) {
+        Object.prototype.values = function () {
+            var ret = [];
+            for (var propName in this) {
+                if (this.hasOwnProperty(propName)) {
+                    ret.push(this[propName])
+                }
+            }
+            return ret;
+        };
+    }
+    if (!Object.prototype.isEmpty) {
+        Object.prototype.isEmpty = function () {
+            for (var propName in this) {
+                if (this.hasOwnProperty(propName)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 };
 dt.builtInExtension();

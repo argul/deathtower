@@ -33,7 +33,8 @@ dt.registerClassInheritance('dt.Class', function () {
                 visibleLoots: {},
                 visibleMonsters: {},
                 visibleTreasures: {},
-                visibleTraps: {}
+                visibleTraps: {},
+                visibleDoors: {}
             };
 
             this.mapExecutors = {};
@@ -59,7 +60,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     fogs: []
                 };
                 lighten.forEach(function (xy) {
-                    mapLevel.clearFog(xy.x, xy.y);
+                    self._clearFog(xy.x, xy.y);
                     b.fogs.push(xy);
                 });
                 this.behaviors.push(b);
@@ -83,6 +84,24 @@ dt.registerClassInheritance('dt.Class', function () {
             var content = this.map.mapLevel.getContent(x, y);
             if (dt.isUndefined(content)) {
                 return;
+            }
+            if (content.equipment) {
+                this.aifeeder.visibleLoots[x * 10000 + y] = content.equipment;
+            }
+            if (content.item) {
+                this.aifeeder.visibleLoots[x * 10000 + y] = content.item;
+            }
+            if (content.monster) {
+                this.aifeeder.visibleMonsters[x * 10000 + y] = content.monster;
+            }
+            if (content.treasure) {
+                this.aifeeder.visibleTreasures[x * 10000 + y] = content.treasure;
+            }
+            if (content.trap) {
+                this.aifeeder.visibleTraps[x * 10000 + y] = content.trap;
+            }
+            if (content.door){
+                this.aifeeder.visibleDoors[x * 10000 + y] = content.door;
             }
         }
     });

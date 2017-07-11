@@ -6,6 +6,10 @@ dt.registerClassInheritance('dt.Class', function () {
     dt.TeamData = dt.Class.extend({
         ctor: function (enterData) {
 
+        },
+
+        hasDoorKey: function (door) {
+            return true;
         }
     })
 });

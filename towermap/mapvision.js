@@ -38,6 +38,9 @@ dt.mapvision = {
                         visitFunc(x, y - 1, depth - 1);
                     }
                 }
+                else if (canvas[y][x] == dt.mapconst.TILE_DOOR) {
+                    visited[x * 10000 + y] = true;
+                }
             }
         };
         var checkVisionFunc = function (canvasX, canvasY) {

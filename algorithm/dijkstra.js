@@ -5,8 +5,8 @@
 dt.dijkstra = {
     simpleSeekAll: function (mapLevel, posX, posY, judgeConnect) {
         if (!dt.isFunction(judgeConnect)) {
-            judgeConnect = function (x, y) {
-                return mapLevel.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+            judgeConnect = function (m, x, y) {
+                return m.getTile(x, y) < dt.mapconst.TILE_NOPASS;
             };
         }
         var ret = dt.suger.genMatrix2D(mapLevel.width, mapLevel.height, -1);
@@ -14,7 +14,7 @@ dt.dijkstra = {
         var visitQueue = [{x: posX, y: posY}];
         var step = 0;
         var touch = function (x, y, step) {
-            if (ret[y][x] == -1 && judgeConnect(x, y)) {
+            if (ret[y][x] == -1 && judgeConnect(mapLevel, x, y)) {
                 ret[y][x] = step;
                 return true;
             }

@@ -10,6 +10,6 @@ dt.mapconst = {
     TILE_NOPASS: 10,
     TILE_STAGE: 11,
     TILE_NOVISION: 12,
-    TILE_WALL: 13,
-    TILE_DOOR: 14
+    TILE_DOOR: 13,
+    TILE_WALL: 14
 };

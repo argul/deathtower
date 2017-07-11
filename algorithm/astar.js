@@ -9,8 +9,8 @@ dt.astar = {
             return;
         }
         if (!dt.isFunction(judgeConnect)) {
-            judgeConnect = function (x, y) {
-                return mapLevel.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+            judgeConnect = function (m, x, y) {
+                return m.getTile(x, y) < dt.mapconst.TILE_NOPASS;
             };
         }
         var self = this;
