@@ -26,23 +26,7 @@ dt.mapvision = {
             }
 
         }
-        var visited = {}; //{ posXY : true }
-        var visitFunc = function (x, y, depth) {
-            if (!visited[x * 10000 + y]) {
-                if (canvas[y][x] < dt.mapconst.TILE_NOVISION) {
-                    visited[x * 10000 + y] = true;
-                    if (depth >= 1) {
-                        visitFunc(x + 1, y, depth - 1);
-                        visitFunc(x - 1, y, depth - 1);
-                        visitFunc(x, y + 1, depth - 1);
-                        visitFunc(x, y - 1, depth - 1);
-                    }
-                }
-                else if (canvas[y][x] == dt.mapconst.TILE_DOOR) {
-                    visited[x * 10000 + y] = true;
-                }
-            }
-        };
+
         var checkVisionFunc = function (canvasX, canvasY) {
             if (canvasX == posX) {
                 if (Math.abs(canvasY - posY) > 2) {
@@ -99,8 +83,26 @@ dt.mapvision = {
             return true;
         };
 
-        visitFunc(range, range, range + 1);
-        Object.keys(visited).forEach(function (posXY) {
+        var spread = {}; //{ posXY : true }
+        var spreadFunc = function (x, y, depth) {
+            if (!spread[x * 10000 + y]) {
+                if (canvas[y][x] < dt.mapconst.TILE_NOVISION) {
+                    spread[x * 10000 + y] = true;
+                    if (depth >= 1) {
+                        spreadFunc(x + 1, y, depth - 1);
+                        spreadFunc(x - 1, y, depth - 1);
+                        spreadFunc(x, y + 1, depth - 1);
+                        spreadFunc(x, y - 1, depth - 1);
+                    }
+                }
+                else if (canvas[y][x] == dt.mapconst.TILE_DOOR) {
+                    spread[x * 10000 + y] = true;
+                }
+            }
+        };
+        spreadFunc(range, range, range + 1);
+
+        Object.keys(spread).forEach(function (posXY) {
             var canvasX = Math.floor(posXY / 10000);
             var canvasY = posXY % 10000;
             if (checkVisionFunc(canvasX, canvasY)) {
@@ -108,10 +110,19 @@ dt.mapvision = {
                 var mapY = canvas2mapY(canvasY);
 
                 if (mapLevel.isFog(mapX, mapY)) {
-                    ret.push({
-                        x: mapX,
-                        y: mapY
-                    })
+                    ret.push({x: mapX, y: mapY});
+                    if (mapLevel.getTile(mapX + 1, mapY) == dt.mapconst.TILE_WALL) {
+                        ret.push({x: mapX + 1, y: mapY});
+                    }
+                    if (mapLevel.getTile(mapX - 1, mapY) == dt.mapconst.TILE_WALL) {
+                        ret.push({x: mapX - 1, y: mapY});
+                    }
+                    if (mapLevel.getTile(mapX, mapY + 1) == dt.mapconst.TILE_WALL) {
+                        ret.push({x: mapX, y: mapY + 1});
+                    }
+                    if (mapLevel.getTile(mapX, mapY - 1) == dt.mapconst.TILE_WALL) {
+                        ret.push({x: mapX, y: mapY - 1});
+                    }
                 }
             }
         });

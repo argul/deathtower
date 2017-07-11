@@ -65,7 +65,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 }
             }
 
-            ret = this._tryExploreFog();
+            ret = this._tryExploreFog(connectivity);
             if (ret) return ret;
 
             if (!feeder.visibleDoors.isEmpty()) {
@@ -149,11 +149,12 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
-                return [{
+                ret = [{
                     aicode: dt.mapAICode.MOVE_TO_LOOT,
                     path: path
                 }];
             }
+            return ret;
         },
 
 
@@ -177,11 +178,12 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
-                return [{
+                ret = [{
                     aicode: dt.mapAICode.MOVE_TO_MONSTER,
                     path: path
                 }];
             }
+            return ret;
         },
 
         _tryTreasure: function (treasure, connectivity) {
@@ -218,11 +220,12 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
-                return [{
+                ret = [{
                     aicode: dt.mapAICode.MOVE_TO_TREASURE,
                     path: path
                 }];
             }
+            return ret;
         },
 
         _tryDoor: function (door, connectivity) {
@@ -259,19 +262,97 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
-                return [{
+                ret = [{
                     aicode: dt.mapAICode.MOVE_TO_TREASURE,
                     path: path
                 }];
             }
+
+            return ret;
         },
 
-        _tryExploreFog: function () {
-             
+        _tryExploreFog: function (connectivity) {
+            var fogs = [];
+            var map = this.getAbacusRef().map;
+            map.mapLevel.foreachTile(function (x, y, tile) {
+                if (tile != dt.mapconst.TILE_WALL
+                    && map.mapLevel.isFog(x, y)
+                    && connectivity[y][x] >= 0) {
+                    fogs.push({x: x, y: y, distance: connectivity[y][x]});
+                }
+            });
+            fogs.sort(function (lhr, rhr) {
+                return lhr.distance - rhr.distance;
+            });
+
+            if (fogs.length <= 0)
+                return;
+            v
+            var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, fogs[0].x, fogs[0].y, this._makeConnectJudge(true, false));
+            dt.assert(path);
+
+            var ret = this._pathBlazer(path);
+            if (!ret) {
+                ret = [{
+                    aicode: dt.mapAICode.MOVE_TO_FOG,
+                    path: path
+                }];
+            }
+
+            return ret;
         },
 
         _gotoNextLevel: function (connectivity) {
+            var ret = undefined;
+            var map = this.getAbacusRef().map;
+            var stairX = map.upstair.x;
+            var stairY = map.upstair.y;
 
+            if (connectivity[stairY][stairX] >= 0) {
+                var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, stairX, stairY, this._makeConnectJudge(true, false));
+                dt.assert(path);
+                ret = this._pathBlazer(path);
+                if (!ret) {
+                    ret = [{
+                        aicode: dt.mapAICode.MOVE_TO_STAIR,
+                        path: path
+                    }];
+                }
+            }
+            else {
+                var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, stairX, stairY, function (m, x, y) {
+                    return m.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+                });
+                dt.assert(path);
+
+                for (var i = 0; i < path.length; i++) {
+                    var x = path[i].x;
+                    var y = path[i].y;
+                    var content = map.mapLevel.getContent(x, y);
+                    if (!content)
+                        continue;
+
+                    if (asserter) {
+                        asserter(content);
+                    }
+
+                    if (content.monster) {
+                        return [{
+                            aicode: dt.mapAICode.MOVE_TO_MONSTER,
+                            path: path.splice(0, i + 1)
+                        }];
+                    }
+
+                    if (content.trap) {
+                        return [{
+                            aicode: dt.mapAICode.MOVE_TO_TRAP,
+                            path: path.splice(0, i + 1)
+                        }];
+                    }
+                }
+            }
+
+            return ret;
         },
 
         _pathBlazer: function (path, asserter) {
