@@ -287,7 +287,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
 
             if (fogs.length <= 0)
                 return;
-            v
+
             var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, fogs[0].x, fogs[0].y, this._makeConnectJudge(true, false));
             dt.assert(path);
 
@@ -332,24 +332,25 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                     if (!content)
                         continue;
 
-                    if (asserter) {
-                        asserter(content);
-                    }
-
                     if (content.monster) {
-                        return [{
+                        ret = [{
                             aicode: dt.mapAICode.MOVE_TO_MONSTER,
-                            path: path.splice(0, i + 1)
+                            path: path.splice(0, i + 1),
+                            aggresive: true
                         }];
+                        break;
                     }
 
                     if (content.trap) {
-                        return [{
+                        ret = [{
                             aicode: dt.mapAICode.MOVE_TO_TRAP,
-                            path: path.splice(0, i + 1)
+                            path: path.splice(0, i + 1),
+                            aggresive: true
                         }];
+                        break;
                     }
                 }
+                dt.assert(ret);
             }
 
             return ret;
