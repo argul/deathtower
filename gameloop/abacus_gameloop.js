@@ -73,7 +73,7 @@ dt.registerClassInheritance('dt.Class', function () {
 
         tick: function () {
             while (this.behaviors.length <= 0) {
-                var decisions = this.mapAI.tick();
+                var decisions = this.mapAI.makeDecision();
                 for (var i = 0; i < decisions.length; i++) {
                     var executor = this.mapExecutors[decisions[i].aicode];
                     this.behaviors = this.behaviors.concat(executor.executeDecision(decisions[i]));

@@ -100,7 +100,7 @@ dt.mapvision = {
                 }
             }
         };
-        spreadFunc(range, range, range + 1);
+        spreadFunc(range, range, range);
 
         Object.keys(spread).forEach(function (posXY) {
             var canvasX = Math.floor(posXY / 10000);

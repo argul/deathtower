@@ -4,7 +4,8 @@
 
 dt.assert = function (c) {
     if (!c) {
-        throw 'assert failure!';
+        dt.print('assert failure!');
+        undefined.a = 0;
     }
 };
 
