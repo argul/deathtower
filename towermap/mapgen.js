@@ -9,7 +9,7 @@ dt.mapgen = {
         var mapLevel = new dt.MapLevel(mapConfig.width, mapConfig.height);
         for (var i = 1; i <= mapConfig.width - 2; i += 2) {
             for (var j = 1; j <= mapConfig.height - 2; j += 2) {
-                mapLevel.setTile(i, j, dt.mapconst.TILE_CORRIDOR);
+                mapLevel.setTile(i, j, dt.tileconst.TILE_CORRIDOR);
             }
         }
 
@@ -140,7 +140,7 @@ dt.mapgen = {
                 });
                 var breakWallX = pos.x + choice[2];
                 var breakWallY = pos.y + choice[3];
-                paramPack.mapLevel.setTile(breakWallX, breakWallY, dt.mapconst.TILE_CORRIDOR);
+                paramPack.mapLevel.setTile(breakWallX, breakWallY, dt.tileconst.TILE_CORRIDOR);
             }
         }
         dt.assert(dt.suger.getKeys(todos).length <= 0);
@@ -169,28 +169,28 @@ dt.mapgen = {
             var canBeDoors = [];
             if (r.y > 0) { //bottom walls
                 for (var i = 1; i < r.width - 1; i++) {
-                    if (paramPack.mapLevel.getTile(r.x + i, r.y - 1) == dt.mapconst.TILE_CORRIDOR) {
+                    if (paramPack.mapLevel.getTile(r.x + i, r.y - 1) == dt.tileconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x + i, y: r.y});
                     }
                 }
             }
             if ((r.y + r.height) < paramPack.mapConfig.height) { //top walls
                 for (var i = 1; i < r.width - 1; i++) {
-                    if (paramPack.mapLevel.getTile(r.x + i, r.y + r.height) == dt.mapconst.TILE_CORRIDOR) {
+                    if (paramPack.mapLevel.getTile(r.x + i, r.y + r.height) == dt.tileconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x + i, y: r.y + r.height - 1});
                     }
                 }
             }
             if (r.x > 0) { //left walls
                 for (var i = 1; i < r.height - 1; i++) {
-                    if (paramPack.mapLevel.getTile(r.x - 1, r.y + i) == dt.mapconst.TILE_CORRIDOR) {
+                    if (paramPack.mapLevel.getTile(r.x - 1, r.y + i) == dt.tileconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x, y: r.y + i});
                     }
                 }
             }
             if ((r.x + r.width) < paramPack.mapConfig.width) { //right walls
                 for (var i = 1; i < r.height - 1; i++) {
-                    if (paramPack.mapLevel.getTile(r.x + r.width, r.y + i) == dt.mapconst.TILE_CORRIDOR) {
+                    if (paramPack.mapLevel.getTile(r.x + r.width, r.y + i) == dt.tileconst.TILE_CORRIDOR) {
                         canBeDoors.push({x: r.x + r.width - 1, y: r.y + i});
                     }
                 }
@@ -200,7 +200,7 @@ dt.mapgen = {
             for (var i = 0; i < doorNum && i < canBeDoors.length; i++) {
                 var doorX = canBeDoors[i].x;
                 var doorY = canBeDoors[i].y;
-                paramPack.mapLevel.setTile(doorX, doorY, dt.mapconst.TILE_CORRIDOR);
+                paramPack.mapLevel.setTile(doorX, doorY, dt.tileconst.TILE_CORRIDOR);
             }
         });
     },
@@ -225,26 +225,26 @@ dt.mapgen = {
         var self = this;
         var todos = {};
         paramPack.mapLevel.foreachTile(function (x, y, tile) {
-            if (tile == dt.mapconst.TILE_CORRIDOR) {
+            if (tile == dt.tileconst.TILE_CORRIDOR) {
                 todos[x * 10000 + y] = {x: x, y: y};
             }
         });
         var checkDeadend = function (t) {
             var c = 0;
             if ((t.x < paramPack.mapConfig.width - 2)
-                && (paramPack.mapLevel.getTile(t.x + 1, t.y) != dt.mapconst.TILE_WALL)) {
+                && (paramPack.mapLevel.getTile(t.x + 1, t.y) != dt.tileconst.TILE_WALL)) {
                 c += 1;
             }
             if ((t.x > 1)
-                && (paramPack.mapLevel.getTile(t.x - 1, t.y) != dt.mapconst.TILE_WALL)) {
+                && (paramPack.mapLevel.getTile(t.x - 1, t.y) != dt.tileconst.TILE_WALL)) {
                 c += 1;
             }
             if ((t.y < paramPack.mapConfig.height - 2)
-                && (paramPack.mapLevel.getTile(t.x, t.y + 1) != dt.mapconst.TILE_WALL)) {
+                && (paramPack.mapLevel.getTile(t.x, t.y + 1) != dt.tileconst.TILE_WALL)) {
                 c += 1;
             }
             if ((t.y > 1)
-                && paramPack.mapLevel.getTile(t.x, t.y - 1) != dt.mapconst.TILE_WALL) {
+                && paramPack.mapLevel.getTile(t.x, t.y - 1) != dt.tileconst.TILE_WALL) {
                 c += 1;
             }
             dt.assert(c >= 1);
@@ -262,7 +262,7 @@ dt.mapgen = {
                 }
             }
             deadendList.forEach(function (element) {
-                paramPack.mapLevel.setTile(element.x, element.y, dt.mapconst.TILE_WALL);
+                paramPack.mapLevel.setTile(element.x, element.y, dt.tileconst.TILE_WALL);
                 delete todos[element.x * 10000 + element.y];
             });
         }

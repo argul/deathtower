@@ -52,15 +52,15 @@ dt.debug = {
         asciiMap.forEach(function (line) {
             line = line.map(function (x) {
                 switch (x) {
-                    case dt.mapconst.TILE_WALL:
+                    case dt.tileconst.TILE_WALL:
                         return '*';
-                    case dt.mapconst.TILE_CORRIDOR:
+                    case dt.tileconst.TILE_CORRIDOR:
                         return ' ';
-                    case dt.mapconst.TILE_ROOMFLOOR:
+                    case dt.tileconst.TILE_ROOMFLOOR:
                         return '#';
-                    case dt.mapconst.TILE_STAIR_UPWARD:
+                    case dt.tileconst.TILE_STAIR_UPWARD:
                         return '↑';
-                    case dt.mapconst.TILE_STAIR_DOWNWARD:
+                    case dt.tileconst.TILE_STAIR_DOWNWARD:
                         return '↓';
                     default:
                         return x;

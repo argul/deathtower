@@ -5,8 +5,8 @@
 dt.astar_test = function () {
     var mapLevel = new dt.MapLevel(2, 2);
     mapLevel.foreachTile(function (x, y) {
-        mapLevel.setTile(x, y, dt.mapconst.TILE_CORRIDOR);
+        mapLevel.setTile(x, y, dt.tileconst.TILE_CORRIDOR);
     });
-    var path = dt.astar.seekPath(mapLevel, 0, 0, 1, 1)
+    var path = dt.astar.seekPath(mapLevel, 0, 0, 1, 1);
     dt.print(JSON.stringify(path, null, 2));
 };

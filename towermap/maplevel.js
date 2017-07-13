@@ -7,7 +7,7 @@ dt.registerClassInheritance('dt.Class', function () {
         ctor: function (width, height) {
             this.width = width;
             this.height = height;
-            this.tiles = dt.suger.genMatrix2D(width, height, dt.mapconst.TILE_WALL);
+            this.tiles = dt.suger.genMatrix2D(width, height, dt.tileconst.TILE_WALL);
             this.fogs = dt.suger.genMatrix2D(width, height, true);
             this.contents = dt.suger.genMatrix2D(width, height, undefined);
             this.rooms = [];
@@ -20,6 +20,7 @@ dt.registerClassInheritance('dt.Class', function () {
         },
 
         clearFog: function (x, y) {
+            dt.assert(this.isFog(x, y));
             this.fogs[y][x] = false;
         },
 
@@ -28,7 +29,7 @@ dt.registerClassInheritance('dt.Class', function () {
             this.roomDict[r.roomId] = r;
             for (var i = 1; i < r.width - 1; i++) {
                 for (var j = 1; j < r.height - 1; j++) {
-                    this.setTile(r.x + i, r.y + j, dt.mapconst.TILE_ROOMFLOOR);
+                    this.setTile(r.x + i, r.y + j, dt.tileconst.TILE_ROOMFLOOR);
                     this._tile2room[(r.x + i) * 10000 + r.y + j] = r;
                 }
             }

@@ -11,13 +11,13 @@ dt.mapAIStrategy = {
 };
 
 dt.mapAICode = {
-    MOVE_TO_LOOT: 1,
-    MOVE_TO_MONSTER: 2,
-    MOVE_TO_TREASURE: 3,
-    MOVE_TO_TRAP: 4,
-    MOVE_TO_DOOR: 5,
-    MOVE_TO_FOG: 6,
-    MOVE_TO_STAIR: 7,
+    MOVE: 1,
+    RAID_MONSTER: 2,
+    OPEN_TREASURE: 3,
+    DISARM_TRAP: 4,
+    TREAD_TRAP: 5,
+    OPEN_DOOR: 6,
+    GO_UPSTAIR: 7,
     USE_ITEM: 100
 };
 
@@ -34,7 +34,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         makeDecision: function () {
             var ret = undefined;
             var map = this.getAbacusRef().map;
-            var feeder = this.getAbacusRef().aifeeder;
+            var feeder = this.getAbacusRef().aiFeeder;
             var team = this.getAbacusRef().teamData;
             var connectivity = dt.dijkstra.simpleSeekAll(map.mapLevel, map.teamX, map.teamY, this._makeConnectJudge(false, false));
 
@@ -83,7 +83,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         _makeConnectJudge: function (noFog, noMonster) {
             return function (m, x, y) {
                 var tile = m.getTile(x, y);
-                if (tile >= dt.mapconst.TILE_NOPASS)
+                if (tile >= dt.tileconst.TILE_NOPASS)
                     return false;
 
                 if (noFog && m.isFog(x, y))
@@ -113,18 +113,46 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         },
 
         _sortLoots: function (loots, connectivity) {
+            loots = loots.filter(function (t) {
+                return connectivity[t.y][t.x] >= 0;
+            });
+            loots.sort(function (lhr, rhr) {
+                return connectivity[lhr.y][lhr.x] - connectivity[rhr.y][rhr.x];
+            });
             return loots;
         },
 
         _sortMonsters: function (monsters, connectivity) {
+            monsters = monsters.filter(function (t) {
+                if (connectivity[t.y][t.x] < 0)
+                    return false;
+                if (t.isAvoid)
+                    return false;
+                return true;
+            });
+            monsters.sort(function (lhr, rhr) {
+                return connectivity[lhr.y][lhr.x] - connectivity[rhr.y][rhr.x];
+            });
             return monsters;
         },
 
         _sortTreasures: function (treasures, connectivity) {
+            treasures = treasures.filter(function (t) {
+                return connectivity[t.y][t.x] >= 0;
+            });
+            treasures.sort(function (lhr, rhr) {
+                return connectivity[lhr.y][lhr.x] - connectivity[rhr.y][rhr.x];
+            });
             return treasures;
         },
 
         _sortDoors: function (doors, connectivity) {
+            doors = doors.filter(function (t) {
+                return connectivity[t.y][t.x] >= 0;
+            });
+            doors.sort(function (lhr, rhr) {
+                return connectivity[lhr.y][lhr.x] - connectivity[rhr.y][rhr.x];
+            });
             return doors;
         },
 
@@ -150,7 +178,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
 
             if (!ret) {
                 ret = [{
-                    aicode: dt.mapAICode.MOVE_TO_LOOT,
+                    aicode: dt.mapAICode.MOVE,
                     path: path
                 }];
             }
@@ -178,9 +206,13 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
+                path.pop();
                 ret = [{
-                    aicode: dt.mapAICode.MOVE_TO_MONSTER,
+                    aicode: dt.mapAICode.MOVE,
                     path: path
+                }, {
+                    aicode: dt.mapAICode.RAID_MONSTER,
+                    monster: monster
                 }];
             }
             return ret;
@@ -206,6 +238,13 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             dt.assert(entries.length > 0);
+            if (entries[0].distance == 0) {
+                return [{
+                    aicode: dt.mapAICode.OPEN_TREASURE,
+                    path: [],
+                    tresure: treasure
+                }];
+            }
 
             var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, entries[0].x, entries[0].y, this._makeConnectJudge(true, false));
             if (!path)
@@ -220,19 +259,19 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
+                path.pop();
                 ret = [{
-                    aicode: dt.mapAICode.MOVE_TO_TREASURE,
+                    aicode: dt.mapAICode.MOVE,
                     path: path
+                }, {
+                    aicode: dt.mapAICode.OPEN_TREASURE,
+                    treasure: treasure
                 }];
             }
             return ret;
         },
 
         _tryDoor: function (door, connectivity) {
-            var team = this.getAbacusRef().teamData;
-            if (!team.hasDoorKey(door))
-                return;
-
             var map = this.getAbacusRef().map;
             var entries = [];
             var f = function (x, y) {
@@ -248,6 +287,12 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 return lhr.distance - rhr.distance;
             });
             dt.assert(entries.length == 1);
+            if (entries[0].distance == 0) {
+                return [{
+                    aicode: dt.mapAICode.OPEN_DOOR,
+                    door: door
+                }];
+            }
 
             var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, entries[0].x, entries[0].y, this._makeConnectJudge(true, false));
             if (!path)
@@ -262,9 +307,13 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
 
             if (!ret) {
+                path.pop();
                 ret = [{
-                    aicode: dt.mapAICode.MOVE_TO_TREASURE,
+                    aicode: dt.mapAICode.MOVE,
                     path: path
+                }, {
+                    aicode: dt.mapAICode.OPEN_DOOR,
+                    door: door
                 }];
             }
 
@@ -275,13 +324,17 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var fogs = [];
             var map = this.getAbacusRef().map;
             map.mapLevel.foreachTile(function (x, y, tile) {
-                if (tile != dt.mapconst.TILE_WALL
+                if (tile != dt.tileconst.TILE_WALL
                     && map.mapLevel.isFog(x, y)
                     && connectivity[y][x] >= 0) {
                     fogs.push({x: x, y: y, distance: connectivity[y][x]});
                 }
             });
             fogs.sort(function (lhr, rhr) {
+                var a = dt.isUndefined(map.mapLevel.getRoomByTile(lhr.x, lhr.y)) ? -1 : 1;
+                var b = dt.isUndefined(map.mapLevel.getRoomByTile(rhr.x, rhr.y)) ? -1 : 1;
+                if (a != b)
+                    return a - b;
                 return lhr.distance - rhr.distance;
             });
 
@@ -294,7 +347,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var ret = this._pathBlazer(path);
             if (!ret) {
                 ret = [{
-                    aicode: dt.mapAICode.MOVE_TO_FOG,
+                    aicode: dt.mapAICode.MOVE,
                     path: path
                 }];
             }
@@ -307,21 +360,29 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var map = this.getAbacusRef().map;
             var stairX = map.upstair.x;
             var stairY = map.upstair.y;
-
-            if (connectivity[stairY][stairX] >= 0) {
+            if (connectivity[stairY][stairX] == 0) {
+                return [{
+                    aicode: dt.mapAICode.GO_UPSTAIR,
+                    stair: map.upstair
+                }];
+            }
+            else if (connectivity[stairY][stairX] > 0) {
                 var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, stairX, stairY, this._makeConnectJudge(true, false));
                 dt.assert(path);
                 ret = this._pathBlazer(path);
                 if (!ret) {
                     ret = [{
-                        aicode: dt.mapAICode.MOVE_TO_STAIR,
+                        aicode: dt.mapAICode.MOVE,
                         path: path
+                    }, {
+                        aicode: dt.mapAICode.GO_UPSTAIR,
+                        stair: map.upstair
                     }];
                 }
             }
             else {
                 var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, stairX, stairY, function (m, x, y) {
-                    return m.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+                    return m.getTile(x, y) < dt.tileconst.TILE_NOPASS;
                 });
                 dt.assert(path);
 
@@ -334,19 +395,36 @@ dt.registerClassInheritance('dt.AIInterface', function () {
 
                     if (content.monster) {
                         ret = [{
-                            aicode: dt.mapAICode.MOVE_TO_MONSTER,
-                            path: path.splice(0, i + 1),
+                            aicode: dt.mapAICode.MOVE,
+                            path: path.splice(0, i)
+                        }, {
+                            aicode: dt.mapAICode.RAID_MONSTER,
+                            monster: content.monster,
                             aggresive: true
                         }];
                         break;
                     }
 
                     if (content.trap) {
-                        ret = [{
-                            aicode: dt.mapAICode.MOVE_TO_TRAP,
-                            path: path.splice(0, i + 1),
-                            aggresive: true
-                        }];
+                        if (trap.isAvoid) {
+                            ret = [{
+                                aicode: dt.mapAICode.MOVE,
+                                path: path.splice(0, i)
+                            }, {
+                                aicode: dt.mapAICode.TREAD_TRAP,
+                                trap: content.trap
+                            }];
+                        }
+                        else {
+                            ret = [{
+                                aicode: dt.mapAICode.MOVE,
+                                path: path.splice(0, i)
+                            }, {
+                                aicode: dt.mapAICode.DISARM_TRAP,
+                                trap: content.trap,
+                                aggresive: true
+                            }];
+                        }
                         break;
                     }
                 }
@@ -362,7 +440,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 var x = path[i].x;
                 var y = path[i].y;
                 if (dt.debug.isStrict()) {
-                    dt.assert(map.mapLevel.getTile(x, y) < dt.mapconst.TILE_NOPASS);
+                    dt.assert(map.mapLevel.getTile(x, y) < dt.tileconst.TILE_NOPASS);
                     dt.assert(!map.mapLevel.isFog(x, y));
                 }
                 var content = map.mapLevel.getContent(x, y);
@@ -374,19 +452,47 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 }
 
                 if (content.monster) {
-                    return [{
-                        aicode: dt.mapAICode.MOVE_TO_MONSTER,
-                        path: path.splice(0, i + 1)
-                    }];
+                    if (i == 0) {
+                        return [{
+                            aicode: dt.mapAICode.RAID_MONSTER,
+                            monster: content.monster
+                        }];
+                    }
+                    else {
+                        return [{
+                            aicode: dt.mapAICode.MOVE,
+                            path: path.splice(0, i)
+                        }, {
+                            aicode: dt.mapAICode.RAID_MONSTER,
+                            monster: content.monster
+                        }];
+                    }
                 }
 
                 if (content.trap) {
+                    if (i == 0) {
+                        return [{
+                            aicode: dt.mapAICode.DISARM_TRAP,
+                            trap: content.trap
+                        }];
+                    }
+                    else {
+                        return [{
+                            aicode: dt.mapAICode.MOVE,
+                            path: path.splice(0, i)
+                        }, {
+                            aicode: dt.mapAICode.DISARM_TRAP,
+                            trap: content.trap
+                        }];
+                    }
+
                     return [{
                         aicode: dt.mapAICode.MOVE_TO_TRAP,
-                        path: path.splice(0, i + 1)
+                        path: path.splice(0, i + 1),
+                        trap: content.trap
                     }];
                 }
             }
-        },
+        }
     });
 });

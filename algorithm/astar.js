@@ -10,7 +10,7 @@ dt.astar = {
         }
         if (!dt.isFunction(judgeConnect)) {
             judgeConnect = function (m, x, y) {
-                return m.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+                return m.getTile(x, y) < dt.tileconst.TILE_NOPASS;
             };
         }
         var self = this;

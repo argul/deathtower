@@ -18,7 +18,7 @@ dt.mapvision = {
                 var mapX = canvas2mapX(i);
                 var mapY = canvas2mapY(j);
                 if (mapX < 0 || mapX >= mapLevel.width || mapY < 0 || mapY >= mapLevel.height) {
-                    canvas[j][i] = dt.mapconst.TILE_WALL;
+                    canvas[j][i] = dt.tileconst.TILE_WALL;
                 }
                 else {
                     canvas[j][i] = mapLevel.getTile(i, j);
@@ -31,7 +31,7 @@ dt.mapvision = {
             if (canvasX == posX) {
                 if (Math.abs(canvasY - posY) > 2) {
                     for (var i = Math.min(posY, canvasY) + 1; i <= Math.max(posY, canvasY) - 1; i++) {
-                        if (canvas[i][canvasX] > dt.mapconst.TILE_NOVISION) {
+                        if (canvas[i][canvasX] > dt.tileconst.TILE_NOVISION) {
                             return false;
                         }
                     }
@@ -40,7 +40,7 @@ dt.mapvision = {
             else if (canvasY == posY) {
                 if (Math.abs(canvasX - posX) > 2) {
                     for (var i = Math.min(posX, canvasX) + 1; i <= Math.max(posX, canvasX) - 1; i++) {
-                        if (canvas[canvasY][i] > dt.mapconst.TILE_NOVISION) {
+                        if (canvas[canvasY][i] > dt.tileconst.TILE_NOVISION) {
                             return false;
                         }
                     }
@@ -75,7 +75,7 @@ dt.mapvision = {
 
                 needCheck = Object.keys(needCheck);
                 for (var i = 0; i < needCheck.length; i++) {
-                    if (canvas[needCheck[i] % 10000][Math.floor(needCheck[i] / 10000)] > dt.mapconst.TILE_NOVISION) {
+                    if (canvas[needCheck[i] % 10000][Math.floor(needCheck[i] / 10000)] > dt.tileconst.TILE_NOVISION) {
                         return false;
                     }
                 }
@@ -86,7 +86,7 @@ dt.mapvision = {
         var spread = {}; //{ posXY : true }
         var spreadFunc = function (x, y, depth) {
             if (!spread[x * 10000 + y]) {
-                if (canvas[y][x] < dt.mapconst.TILE_NOVISION) {
+                if (canvas[y][x] < dt.tileconst.TILE_NOVISION) {
                     spread[x * 10000 + y] = true;
                     if (depth >= 1) {
                         spreadFunc(x + 1, y, depth - 1);
@@ -95,7 +95,7 @@ dt.mapvision = {
                         spreadFunc(x, y - 1, depth - 1);
                     }
                 }
-                else if (canvas[y][x] == dt.mapconst.TILE_DOOR) {
+                else if (canvas[y][x] == dt.tileconst.TILE_DOOR) {
                     spread[x * 10000 + y] = true;
                 }
             }
@@ -111,16 +111,16 @@ dt.mapvision = {
 
                 if (mapLevel.isFog(mapX, mapY)) {
                     ret.push({x: mapX, y: mapY});
-                    if (mapLevel.getTile(mapX + 1, mapY) == dt.mapconst.TILE_WALL) {
+                    if (mapLevel.getTile(mapX + 1, mapY) == dt.tileconst.TILE_WALL) {
                         ret.push({x: mapX + 1, y: mapY});
                     }
-                    if (mapLevel.getTile(mapX - 1, mapY) == dt.mapconst.TILE_WALL) {
+                    if (mapLevel.getTile(mapX - 1, mapY) == dt.tileconst.TILE_WALL) {
                         ret.push({x: mapX - 1, y: mapY});
                     }
-                    if (mapLevel.getTile(mapX, mapY + 1) == dt.mapconst.TILE_WALL) {
+                    if (mapLevel.getTile(mapX, mapY + 1) == dt.tileconst.TILE_WALL) {
                         ret.push({x: mapX, y: mapY + 1});
                     }
-                    if (mapLevel.getTile(mapX, mapY - 1) == dt.mapconst.TILE_WALL) {
+                    if (mapLevel.getTile(mapX, mapY - 1) == dt.tileconst.TILE_WALL) {
                         ret.push({x: mapX, y: mapY - 1});
                     }
                 }

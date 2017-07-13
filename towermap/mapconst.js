@@ -3,6 +3,10 @@
  */
 
 dt.mapconst = {
+    VISIBLE_RANGE: 3
+};
+
+dt.tileconst = {
     TILE_CORRIDOR: 1,
     TILE_ROOMFLOOR: 2,
     TILE_STAIR_UPWARD: 3,

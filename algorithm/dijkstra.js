@@ -6,7 +6,7 @@ dt.dijkstra = {
     simpleSeekAll: function (mapLevel, posX, posY, judgeConnect) {
         if (!dt.isFunction(judgeConnect)) {
             judgeConnect = function (m, x, y) {
-                return m.getTile(x, y) < dt.mapconst.TILE_NOPASS;
+                return m.getTile(x, y) < dt.tileconst.TILE_NOPASS;
             };
         }
         var ret = dt.suger.genMatrix2D(mapLevel.width, mapLevel.height, -1);
