@@ -36,7 +36,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var map = this.getAbacusRef().map;
             var feeder = this.getAbacusRef().aiFeeder;
             var team = this.getAbacusRef().teamData;
-            var connectivity = dt.dijkstra.simpleSeekAll(map.mapLevel, map.teamX, map.teamY, this._makeConnectJudge(false, false));
+            var connectivity = dt.dijkstra.BFS(map.mapLevel, map.teamX, map.teamY, this._makeConnectJudge(false, false));
 
             if (!feeder.visibleTreasures.isEmpty()) {
                 var treasures = feeder.visibleTreasures.values();

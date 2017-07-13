@@ -3,7 +3,7 @@
  */
 
 dt.dijkstra = {
-    simpleSeekAll: function (mapLevel, posX, posY, judgeConnect) {
+    BFS: function (mapLevel, posX, posY, judgeConnect) {
         if (!dt.isFunction(judgeConnect)) {
             judgeConnect = function (m, x, y) {
                 return m.getTile(x, y) < dt.tileconst.TILE_NOPASS;

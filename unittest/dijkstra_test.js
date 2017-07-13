@@ -2,7 +2,7 @@
  * Created by argulworm on 7/7/17.
  */
 
-dt.dijkstra_test_simple = function () {
+dt.dijkstra_test_BFS = function () {
     var ctx = new dt.Context(0);
     var mapConfig = {
         width: 35,
@@ -19,5 +19,5 @@ dt.dijkstra_test_simple = function () {
 
     var mapLevel = dt.mapgen.generateMapLevel(mapConfig, ctx);
     var stairs = dt.mapassemble.makeStairs(mapLevel, ctx);
-    dt.debug.dumpDijkstraResult(dt.dijkstra.simpleSeekAll(mapLevel, stairs.down.x, stairs.down.y));
+    dt.debug.dumpDijkstraResult(dt.dijkstra.BFS(mapLevel, stairs.down.x, stairs.down.y));
 };

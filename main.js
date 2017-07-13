@@ -6,8 +6,8 @@ dt.flushClassInheritance();
 dt.main = function () {
     //dt.astar_test();
     //dt.mapgen_test();
-    //dt.abacus_test();
-    dt.dijkstra_test_simple();
+    //dt.dijkstra_test_BFS();
+    dt.abacus_test();
 };
 
 dt.main();
