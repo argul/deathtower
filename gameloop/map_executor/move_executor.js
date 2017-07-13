@@ -52,17 +52,28 @@ dt.registerClassInheritance('dt.Class', function () {
                 }
 
                 var lighten = dt.mapvision.ferret(map.mapLevel, map.teamX, map.teamY, dt.mapconst.VISIBLE_RANGE);
-                var interrupt = false;
-                var self = this;
-                lighten.forEach(function (l) {
-                    abacus.doClearFog(l.x, l.y);
-                    if (self.shouldInterrupt(map, l.x, l.y)) {
-                        interrupt = true;
+                if (lighten.length > 0) {
+                    var interrupt = false;
+                    var self = this;
+                    var fogs = [];
+
+                    lighten.forEach(function (l) {
+                        abacus.doClearFog(l.x, l.y);
+                        fogs.push(l);
+                        if (self.shouldInterrupt(map, l.x, l.y)) {
+                            interrupt = true;
+                        }
+                    });
+
+                    ret.push({
+                        behavior: dt.behaviorCode.UPDATE_MAP,
+                        fogs: fogs
+                    });
+
+                    if (interrupt) {
+                        abacus.executeFeeder.interrupt = true;
+                        break;
                     }
-                });
-                if (interrupt) {
-                    abacus.executeFeeder.interrupt = true;
-                    break;
                 }
             }
 

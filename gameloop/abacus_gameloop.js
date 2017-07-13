@@ -60,7 +60,7 @@ dt.registerClassInheritance('dt.Class', function () {
             var lighten = dt.mapvision.ferret(mapLevel, stairs.down.x, stairs.down.y, dt.mapconst.VISIBLE_RANGE);
             if (lighten.length > 0) {
                 var b = {
-                    behaviorCode: dt.behaviorCode.UPDATE_MAP,
+                    behavior: dt.behaviorCode.UPDATE_MAP,
                     fogs: []
                 };
                 lighten.forEach(function (xy) {
@@ -85,7 +85,10 @@ dt.registerClassInheritance('dt.Class', function () {
                 }
             }
             dt.assert(this.behaviors.length > 0);
-            return this.behaviors.shift();
+            var ret = this.behaviors.shift();
+            this._postProcess(ret);
+
+            return ret;
         },
 
         doClearFog: function (x, y) {
@@ -112,6 +115,23 @@ dt.registerClassInheritance('dt.Class', function () {
             if (content.door) {
                 this.aiFeeder.visibleDoors[x * 10000 + y] = content.door;
             }
+        },
+
+        _postProcess: function (b) {
+            if (b.behavior == dt.behaviorCode.LEAVE_MAP) {
+                if (this.map.curLevel == this.config.maxLevel) {
+                    this.behaviors.push({
+                        behavior: dt.behaviorCode.LEAVE_TOWER
+                    });
+                }
+                else {
+                    this._generateNewMapLevel();
+                }
+            }
+        },
+
+        _generateNewMapLevel: function () {
+            // todo
         }
     });
 });

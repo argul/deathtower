@@ -20,7 +20,7 @@ dt.abacus_test = function () {
         abacusId: 'test',
         seed: 0,
         mapConfig: mapConfig,
-        maxLevel: 20,
+        maxLevel: 1,
         teamEnterData: new dt.TeamEnterData(),
         customized: {
             strategy: dt.mapAIStrategy.NORMAL
