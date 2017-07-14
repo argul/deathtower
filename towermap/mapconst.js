@@ -2,10 +2,6 @@
  * Created by argulworm on 6/29/17.
  */
 
-dt.mapconst = {
-    VISIBLE_RANGE: 3
-};
-
 dt.tileconst = {
     TILE_CORRIDOR: 1,
     TILE_ROOMFLOOR: 2,

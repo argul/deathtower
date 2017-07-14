@@ -48,25 +48,47 @@ def main():
     resultTxt = output[1]
     if output[0] != 0:
         pattern = re.compile(r'\((.+\.js):(\d+):\d+\)')
+        pattern2 = re.compile(r'at (.+\.js):(\d+):\d+')
         outputLines = output[1].split('\n')
 
         def codeLineRecover(l):
-            if l.startswith('    at '):
-                match = pattern.search(l)
-                if match and len(match.regs) == 3:
-                    filename = l[match.regs[1][0]:match.regs[1][1]]
-                    if filename.endswith('_run_.js'):
-                        lineNumber = int(l[match.regs[2][0]:match.regs[2][1]])
-                        parts = []
-                        parts.append(l[:match.regs[1][0]])
-                        for rs in codeLineInfo:
-                            if lineNumber >= rs[0] and lineNumber <= rs[1]:
-                                parts.append(rs[2])
-                                parts.append(':')
-                                parts.append(str(lineNumber - rs[0] + 1))
-                                break
-                        parts.append(l[match.regs[2][1]:])
-                        return ''.join(parts)
+            if l.find('_run_.js') != -1:
+                if l.startswith('    at '):
+                    match = pattern.search(l)
+                    if match and len(match.regs) == 3:
+                        filename = l[match.regs[1][0]:match.regs[1][1]]
+                        if filename.endswith('_run_.js'):
+                            lineNumber = int(l[match.regs[2][0]:match.regs[2][1]])
+                            parts = []
+                            parts.append(l[:match.regs[1][0]])
+                            for rs in codeLineInfo:
+                                if lineNumber >= rs[0] and lineNumber <= rs[1]:
+                                    parts.append(rs[2])
+                                    parts.append(':')
+                                    parts.append(str(lineNumber - rs[0] + 1))
+                                    break
+                            parts.append(l[match.regs[2][1]:])
+                            return ''.join(parts)
+                    match = pattern2.search(l)
+                    if match and len(match.regs) == 3:
+                        filename = l[match.regs[1][0]:match.regs[1][1]]
+                        if filename.endswith('_run_.js'):
+                            lineNumber = int(l[match.regs[2][0]:match.regs[2][1]])
+                            parts = []
+                            parts.append(l[:match.regs[1][0]])
+                            for rs in codeLineInfo:
+                                if lineNumber >= rs[0] and lineNumber <= rs[1]:
+                                    parts.append(rs[2])
+                                    parts.append(':')
+                                    parts.append(str(lineNumber - rs[0] + 1))
+                                    break
+                            parts.append(l[match.regs[2][1]:])
+                            return ''.join(parts)
+                else:
+                    lineNumber = int(l.split('_run_.js:')[1])
+                    for rs in codeLineInfo:
+                        if lineNumber >= rs[0] and lineNumber <= rs[1]:
+                            return '%s:%d' % (rs[2], lineNumber - rs[0] + 1)
             return l
 
         outputLines = map(codeLineRecover, outputLines)

@@ -5,6 +5,15 @@
 dt.Random = function (seed) {
     var _seed = seed;
     return {
+        random01: function () {
+            //return Math.random();
+            _seed = _seed * 951413 + 314159;
+            _seed = _seed % 3214567;
+            if (_seed * 2 > 3214567)
+                _seed = _seed + 1;
+            return _seed / 3214567;
+        },
+
         randomInt: function (min, max) {
             var ret = min + Math.floor((max - min + 1) * this.random01());
             return (ret > max) ? max : ret;
@@ -20,13 +29,6 @@ dt.Random = function (seed) {
             dt.assert(dt.math.isEven(min));
             dt.assert(dt.math.isEven(max));
             return min + this.randomInt(0, (max - min) / 2) * 2;
-        },
-
-        random01: function () {
-            return Math.random();
-            // _seed += 1;
-            // var x = Math.sin(_seed) * 10000;
-            // return x - Math.floor(x);
         },
 
         randomBool: function () {

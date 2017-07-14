@@ -18,6 +18,7 @@ dt.registerClassInheritance('dt.Class', function () {
 
             this.config.mapConfig = paramsPack.mapConfig;
             this.config.maxLevel = paramsPack.maxLevel;
+            this.config.visRange = paramsPack.visRange;
 
             this.map.curLevel = 1;
             var mapLevel = dt.mapgen.generateMapLevel(paramsPack.mapConfig, this.ctx);
@@ -57,7 +58,7 @@ dt.registerClassInheritance('dt.Class', function () {
             });
 
             var self = this;
-            var lighten = dt.mapvision.ferret(mapLevel, stairs.down.x, stairs.down.y, dt.mapconst.VISIBLE_RANGE);
+            var lighten = dt.mapvision.ferret(mapLevel, stairs.down.x, stairs.down.y, this.config.visRange);
             if (lighten.length > 0) {
                 var b = {
                     behavior: dt.behaviorCode.UPDATE_MAP,
@@ -76,7 +77,10 @@ dt.registerClassInheritance('dt.Class', function () {
                 var decisions = this.mapAI.makeDecision();
                 for (var i = 0; i < decisions.length; i++) {
                     var executor = this.mapExecutors[decisions[i].aicode];
-                    this.behaviors = this.behaviors.concat(executor.executeDecision(decisions[i]));
+                    var bvs = executor.executeDecision(decisions[i]);
+                    dt.print('<=========================================>');
+                    dt.print(bvs);
+                    this.behaviors = this.behaviors.concat(bvs);
 
                     if (this.executeFeeder.interrupt) {
                         this.executeFeeder.interrupt = false;

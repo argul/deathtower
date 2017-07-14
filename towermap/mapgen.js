@@ -3,7 +3,7 @@
  */
 
 dt.mapgen = {
-    _DEBUG_DETAIL: false,
+    _VERBOSE: false,
     generateMapLevel: function (mapConfig, ctx) {
         var self = this;
         var mapLevel = new dt.MapLevel(mapConfig.width, mapConfig.height);
@@ -18,7 +18,7 @@ dt.mapgen = {
             mapLevel.addRoom(r);
         });
 
-        if (this._DEBUG_DETAIL) {
+        if (this._VERBOSE) {
             dt.debug.verbose('only rooms');
             dt.debug.dumpAscIIMap(mapLevel);
         }
@@ -29,19 +29,19 @@ dt.mapgen = {
             ctx: ctx
         };
         this._carveMaze(paramPack);
-        if (this._DEBUG_DETAIL) {
+        if (this._VERBOSE) {
             dt.debug.verbose('rooms & maze');
             dt.debug.dumpAscIIMap(mapLevel);
         }
 
         this._openDoors(paramPack);
-        if (this._DEBUG_DETAIL) {
+        if (this._VERBOSE) {
             dt.debug.verbose('rooms & maze & doors');
             dt.debug.dumpAscIIMap(mapLevel);
         }
 
         this._sealDeadend(paramPack);
-        if (this._DEBUG_DETAIL) {
+        if (this._VERBOSE) {
             dt.debug.verbose('final');
             dt.debug.dumpAscIIMap(mapLevel);
         }

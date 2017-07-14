@@ -21,6 +21,7 @@ dt.abacus_test = function () {
         seed: 0,
         mapConfig: mapConfig,
         maxLevel: 1,
+        visRange: 5,
         teamEnterData: new dt.TeamEnterData(),
         customized: {
             strategy: dt.mapAIStrategy.NORMAL

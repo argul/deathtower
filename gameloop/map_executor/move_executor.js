@@ -51,7 +51,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     }
                 }
 
-                var lighten = dt.mapvision.ferret(map.mapLevel, map.teamX, map.teamY, dt.mapconst.VISIBLE_RANGE);
+                var lighten = dt.mapvision.ferret(map.mapLevel, map.teamX, map.teamY, abacus.config.visRange);
                 if (lighten.length > 0) {
                     var interrupt = false;
                     var self = this;

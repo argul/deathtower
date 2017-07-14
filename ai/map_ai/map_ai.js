@@ -23,6 +23,7 @@ dt.mapAICode = {
 
 dt.registerClassInheritance('dt.AIInterface', function () {
     dt.MapAI = dt.AIInterface.extend({
+        _VERBOSE: true,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },
@@ -37,6 +38,9 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var feeder = this.getAbacusRef().aiFeeder;
             var team = this.getAbacusRef().teamData;
             var connectivity = dt.dijkstra.BFS(map.mapLevel, map.teamX, map.teamY, this._makeConnectJudge(false, false));
+            if (this._VERBOSE) {
+                dt.debug.dumpDijkstraResult(connectivity);
+            }
 
             if (!feeder.visibleTreasures.isEmpty()) {
                 var treasures = feeder.visibleTreasures.values();
@@ -90,23 +94,22 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                     return false;
 
                 var content = m.getContent(x, y);
-                if (!content)
-                    return false;
+                if (content) {
+                    if (noMonster) {
+                        if (content.monster)
+                            return false;
+                    }
+                    else {
+                        if (content.monster && content.monster.isAvoid)
+                            return false;
+                    }
 
-                if (noMonster) {
-                    if (content.monster)
+                    if (content.trap && content.trap.isAvoid)
+                        return false;
+
+                    if (content.door)
                         return false;
                 }
-                else {
-                    if (content.monster && content.monster.isAvoid)
-                        return false;
-                }
-
-                if (content.trap && content.trap.isAvoid)
-                    return false;
-
-                if (content.door)
-                    return false;
 
                 return true;
             };
