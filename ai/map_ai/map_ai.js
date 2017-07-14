@@ -38,9 +38,6 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var feeder = this.getAbacusRef().aiFeeder;
             var team = this.getAbacusRef().teamData;
             var connectivity = dt.dijkstra.BFS(map.mapLevel, map.teamX, map.teamY, this._makeConnectJudge(false, false));
-            if (this._VERBOSE) {
-                dt.debug.dumpDijkstraResult(connectivity);
-            }
 
             if (!feeder.visibleTreasures.isEmpty()) {
                 var treasures = feeder.visibleTreasures.values();
@@ -324,18 +321,27 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         },
 
         _tryExploreFog: function (connectivity) {
+            var self = this;
             var fogs = [];
             var map = this.getAbacusRef().map;
+
+            var bfsResult = dt.dijkstra.BFS(map.mapLevel, map.teamX, map.teamY, function (m, x, y) {
+                return m.getTile(x, y) < dt.tileconst.TILE_NOPASS;
+            }, function (m, x, y) {
+                return m.isFog(x, y);
+            });
+
             map.mapLevel.foreachTile(function (x, y, tile) {
                 if (tile != dt.tileconst.TILE_WALL
                     && map.mapLevel.isFog(x, y)
-                    && connectivity[y][x] >= 0) {
-                    fogs.push({x: x, y: y, distance: connectivity[y][x]});
+                    && bfsResult[y][x] >= 0) {
+                    fogs.push({x: x, y: y, distance: bfsResult[y][x]});
                 }
             });
+
             fogs.sort(function (lhr, rhr) {
-                var a = dt.isUndefined(map.mapLevel.getRoomByTile(lhr.x, lhr.y)) ? -1 : 1;
-                var b = dt.isUndefined(map.mapLevel.getRoomByTile(rhr.x, rhr.y)) ? -1 : 1;
+                var a = dt.isUndefined(map.mapLevel.getRoomByTile(lhr.x, lhr.y)) ? 1 : -1;
+                var b = dt.isUndefined(map.mapLevel.getRoomByTile(rhr.x, rhr.y)) ? 1 : -1;
                 if (a != b)
                     return a - b;
                 return lhr.distance - rhr.distance;
@@ -343,15 +349,26 @@ dt.registerClassInheritance('dt.AIInterface', function () {
 
             if (fogs.length <= 0)
                 return;
+            if (this._VERBOSE) {
+                dt.print("MapAI:_tryExploreFog fogX=" + fogs[0].x + " fogY=" + fogs[0].y);
+            }
 
-            var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, fogs[0].x, fogs[0].y, this._makeConnectJudge(true, false));
+            var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, fogs[0].x, fogs[0].y, function (m, x, y) {
+                if (x == fogs[0].x && y == fogs[0].y) { // only destination is fog
+                    return true;
+                }
+                else {
+                    return self._makeConnectJudge(true, false)(m, x, y);
+                }
+            });
             dt.assert(path);
 
             var ret = this._pathBlazer(path);
             if (!ret) {
                 ret = [{
                     aicode: dt.mapAICode.MOVE,
-                    path: path
+                    path: path,
+                    targetFog: {x: fogs[0].x, y: fogs[0].y}
                 }];
             }
 
@@ -442,9 +459,16 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             for (var i = 0; i < path.length; i++) {
                 var x = path[i].x;
                 var y = path[i].y;
+
+                if (this._VERBOSE) {
+                    dt.print('_pathBlazer x=' + x + '|y=' + y);
+                }
+
                 if (dt.debug.isStrict()) {
                     dt.assert(map.mapLevel.getTile(x, y) < dt.tileconst.TILE_NOPASS);
-                    dt.assert(!map.mapLevel.isFog(x, y));
+                    if (i < path.length - 1) {
+                        dt.assert(!map.mapLevel.isFog(x, y));
+                    }
                 }
                 var content = map.mapLevel.getContent(x, y);
                 if (!content)
@@ -488,14 +512,9 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                             trap: content.trap
                         }];
                     }
-
-                    return [{
-                        aicode: dt.mapAICode.MOVE_TO_TRAP,
-                        path: path.splice(0, i + 1),
-                        trap: content.trap
-                    }];
                 }
             }
+            return undefined;
         }
     });
 });

@@ -29,9 +29,16 @@ dt.abacus_test = function () {
     });
 
     var tmp = [];
+    var step = 0;
+    var endloop = function (x) {
+        if (step > 20) return true;
+        if (x.behaviorCode == dt.behaviorCode.DEFEATED) return true;
+        if (x.behaviorCode == dt.behaviorCode.LEAVE_TOWER) return true;
+        return false;
+    };
     do {
         var b = ins.tick();
         tmp.push(b);
-    } while (b.behaviorCode != dt.behaviorCode.DEFEATED && b.behaviorCode != dt.behaviorCode.LEAVE_TOWER);
-    dt.print(tmp);
+        step += 1;
+    } while (!endloop(b));
 };

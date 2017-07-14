@@ -4,6 +4,7 @@
 
 dt.registerClassInheritance('dt.Class', function () {
     dt.MapMoveExecutor = dt.Class.extend({
+        _VERBOSE: true,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },
@@ -60,7 +61,7 @@ dt.registerClassInheritance('dt.Class', function () {
                     lighten.forEach(function (l) {
                         abacus.doClearFog(l.x, l.y);
                         fogs.push(l);
-                        if (self.shouldInterrupt(map, l.x, l.y)) {
+                        if (self.shouldInterrupt(decision, map, l.x, l.y)) {
                             interrupt = true;
                         }
                     });
@@ -75,13 +76,27 @@ dt.registerClassInheritance('dt.Class', function () {
                         break;
                     }
                 }
+
+                if (this._VERBOSE) {
+                    dt.print('MapMoveExecutor:moveto x=' + path[i].x + '|y=' + path[i].y);
+                    dt.debug.dumpAscIIMap(map.mapLevel, function (x, y) {
+                        if (x == map.teamX && y == map.teamY) {
+                            return 'X';
+                        }
+                    });
+                }
             }
 
             dt.assert(ret.length > 0);
             return ret;
         },
 
-        shouldInterrupt: function (map, x, y) {
+        shouldInterrupt: function (decision, map, x, y) {
+            if (decision.targetFog
+                && decision.targetFog.x == x
+                && decision.targetFog.y == y) {
+                return true;
+            }
             return !dt.isUndefined(map.mapLevel.getContent(x, y));
         }
     });

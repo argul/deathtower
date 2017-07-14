@@ -3,7 +3,7 @@
  */
 
 dt.mapvision = {
-    _VERBOSE: false,
+    _VERBOSE: true,
     ferret: function (mapLevel, posX, posY, range) {
         var ret = [];
         var self = this;
@@ -30,20 +30,12 @@ dt.mapvision = {
             }
         }
 
-        if (this._VERBOSE) {
-            dt.debug.dumpAscIIMap(mapLevel);
-            this.dumpCanvas(canvas);
-        }
-
         var checkVisionFunc = function (canvasX, canvasY) {
-            if (self._VERBOSE) {
-                dt.print('checkVisionFunc ' + canvasX + ':' + canvasY);
-            }
             if (canvasX == canvasPosX && canvasY == canvasPosY) {
                 return true;
             }
             else if (canvasX == canvasPosX) {
-                if (Math.abs(canvasY - canvasPosY) > 2) {
+                if (Math.abs(canvasY - canvasPosY) >= 2) {
                     for (var i = Math.min(canvasPosY, canvasY) + 1; i <= Math.max(canvasPosY, canvasY) - 1; i++) {
                         if (canvas[i][canvasX] > dt.tileconst.TILE_NOVISION) {
                             return false;
@@ -52,7 +44,7 @@ dt.mapvision = {
                 }
             }
             else if (canvasY == canvasPosY) {
-                if (Math.abs(canvasX - canvasPosX) > 2) {
+                if (Math.abs(canvasX - canvasPosX) >= 2) {
                     for (var i = Math.min(canvasPosX, canvasX) + 1; i <= Math.max(canvasPosX, canvasX) - 1; i++) {
                         if (canvas[canvasY][i] > dt.tileconst.TILE_NOVISION) {
                             return false;
@@ -100,9 +92,6 @@ dt.mapvision = {
                 for (var i = 0; i < needCheck.length; i++) {
                     var canvasCheckX = Math.floor(needCheck[i] / 10000);
                     var canvasCheckY = needCheck[i] % 10000;
-                    if (self._VERBOSE) {
-                        dt.print('canvasCheck ' + canvasCheckX + ':' + canvasCheckY);
-                    }
                     if (canvas[canvasCheckY][canvasCheckX] > dt.tileconst.TILE_NOVISION) {
                         return false;
                     }
@@ -113,39 +102,31 @@ dt.mapvision = {
 
         var spread = {}; //{ posXY : true }
         var spreadFunc = function (x, y, depth) {
-            if (!spread[x * 10000 + y]) {
-                if (canvas[y][x] < dt.tileconst.TILE_NOVISION) {
-                    spread[x * 10000 + y] = true;
-                    if (depth >= 1) {
-                        spreadFunc(x + 1, y, depth - 1);
-                        spreadFunc(x - 1, y, depth - 1);
-                        spreadFunc(x, y + 1, depth - 1);
-                        spreadFunc(x, y - 1, depth - 1);
-                    }
+            if (canvas[y][x] < dt.tileconst.TILE_NOVISION) {
+                spread[x * 10000 + y] = true;
+                if (depth >= 1) {
+                    spreadFunc(x + 1, y, depth - 1);
+                    spreadFunc(x - 1, y, depth - 1);
+                    spreadFunc(x, y + 1, depth - 1);
+                    spreadFunc(x, y - 1, depth - 1);
                 }
-                else if (canvas[y][x] == dt.tileconst.TILE_DOOR) {
-                    spread[x * 10000 + y] = true;
-                }
+            }
+            else if (canvas[y][x] == dt.tileconst.TILE_DOOR) {
+                spread[x * 10000 + y] = true;
             }
         };
         spreadFunc(range, range, range);
-        if (this._VERBOSE) {
-            Object.keys(spread).forEach(function (posXY) {
-                var canvasX = Math.floor(posXY / 10000);
-                var canvasY = posXY % 10000;
-                canvas[canvasY][canvasX] = '☼';
-            });
-            this.dumpCanvas(canvas);
-        }
+        dt.print('before:');
+        dt.debug.dumpAscIIMap(mapLevel, function (x, y) {
+            if (x == posX && y == posY) return 'X';
+            if (spread[(x + canvasPosX - posX) * 10000 + (y + canvasPosY - posY)]) return '@';
+        });
 
         var walls = {};
         Object.keys(spread).forEach(function (posXY) {
             var canvasX = Math.floor(posXY / 10000);
             var canvasY = posXY % 10000;
             var visible = checkVisionFunc(canvasX, canvasY);
-            if (self._VERBOSE) {
-                dt.print('checkVisionFunc result=' + visible);
-            }
             if (visible) {
                 var mapX = canvas2mapX(canvasX);
                 var mapY = canvas2mapY(canvasY);
@@ -174,10 +155,15 @@ dt.mapvision = {
                 ret.push({x: mapX, y: mapY});
             }
         });
-        if (this._VERBOSE){
-            dt.print("mapvision:ferret ret = ");
-            dt.print(ret);
-        }
+        dt.print('after:');
+        dt.debug.dumpAscIIMap(mapLevel, function (x, y) {
+            if (x == posX && y == posY) return 'X';
+            if (mapLevel.getTile(x, y) < dt.tileconst.TILE_NOPASS
+                && ret.filter(function (t) {
+                    return t.x == x && t.y == y;
+                }).length > 0) return '!';
+            if (spread[(x + canvasPosX - posX) * 10000 + (y + canvasPosY - posY)]) return '@';
+        });
 
         return ret;
     },
@@ -195,7 +181,7 @@ dt.mapvision = {
                     case dt.tileconst.TILE_CORRIDOR:
                         return ' ';
                     case dt.tileconst.TILE_ROOMFLOOR:
-                        return '#';
+                        return ' ';
                     case dt.tileconst.TILE_STAIR_UPWARD:
                         return '↑';
                     case dt.tileconst.TILE_STAIR_DOWNWARD:

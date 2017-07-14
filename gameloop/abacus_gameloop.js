@@ -4,6 +4,7 @@
 
 dt.registerClassInheritance('dt.Class', function () {
     dt.AbacusGameloop = dt.Class.extend({
+        _VERBOSE: false,
         MODE_MAP: 'MODE_MAP',
         MODE_BATTLE: 'MODE_BATTLE',
         ctor: function (paramsPack) {
@@ -58,7 +59,7 @@ dt.registerClassInheritance('dt.Class', function () {
             });
 
             var self = this;
-            var lighten = dt.mapvision.ferret(mapLevel, stairs.down.x, stairs.down.y, this.config.visRange);
+            var lighten = dt.mapvision.ferret(mapLevel, this.map.teamX, this.map.teamY, this.config.visRange);
             if (lighten.length > 0) {
                 var b = {
                     behavior: dt.behaviorCode.UPDATE_MAP,
@@ -74,12 +75,19 @@ dt.registerClassInheritance('dt.Class', function () {
 
         tick: function () {
             while (this.behaviors.length <= 0) {
+                if (this._VERBOSE) {
+                    var self = this;
+                    dt.debug.dumpAscIIMap(this.map.mapLevel, function (x, y) {
+                        if (x == self.map.teamX && y == self.map.teamY) {
+                            return 'X';
+                        }
+                    });
+                }
+
                 var decisions = this.mapAI.makeDecision();
                 for (var i = 0; i < decisions.length; i++) {
                     var executor = this.mapExecutors[decisions[i].aicode];
                     var bvs = executor.executeDecision(decisions[i]);
-                    dt.print('<=========================================>');
-                    dt.print(bvs);
                     this.behaviors = this.behaviors.concat(bvs);
 
                     if (this.executeFeeder.interrupt) {

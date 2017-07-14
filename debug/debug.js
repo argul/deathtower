@@ -45,20 +45,29 @@ dt.debug = {
         dt.print('[dumpPref][' + token + ']:' + (dt.unixtime() - stub));
     },
 
-    dumpAscIIMap: function (mapLevel) {
+    dumpAscIIMap: function (mapLevel, customizer) {
         var asciiMap = dt.suger.shallowCopy(mapLevel.tiles);
         asciiMap.reverse();
 
         dt.print('==========================================');
-        asciiMap.forEach(function (line) {
-            line = line.map(function (x) {
-                switch (x) {
+        dt.print("'e'=EQUIP 'i'=ITEM 'm'=MONSTER 't'=TRAP 'd'=DOOR 'X'=PLAYER");
+        asciiMap.forEach(function (line, idx0) {
+            line = line.map(function (tile, idx1) {
+                var x = idx1;
+                var y = mapLevel.height - 1 - idx0;
+                if (dt.isFunction(customizer)) {
+                    var c = customizer(x, y);
+                    if (dt.isString(c)) {
+                        return c;
+                    }
+                }
+                switch (tile) {
                     case dt.tileconst.TILE_WALL:
                         return '*';
                     case dt.tileconst.TILE_CORRIDOR:
-                        return ' ';
+                        return mapLevel.isFog(x, y) ? ' ' : '☼';
                     case dt.tileconst.TILE_ROOMFLOOR:
-                        return '#';
+                        return mapLevel.isFog(x, y) ? ' ' : '☼';
                     case dt.tileconst.TILE_STAIR_UPWARD:
                         return '↑';
                     case dt.tileconst.TILE_STAIR_DOWNWARD:

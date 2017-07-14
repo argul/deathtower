@@ -70,13 +70,23 @@ dt.astar = {
             delete heapNodes[head.x * 10000 + head.y];
             deadends[head.x * 10000 + head.y] = true;
 
-            finalNode = sniffer(head, 1, 0);
+            var dx, dy, dxall = endX - head.x, dyall = endY - head.y;
+            if (Math.abs(dyall) >= Math.abs(dxall)) {
+                dx = 0;
+                dy = dyall > 0 ? 1 : -1;
+            }
+            else {
+                dx = dxall > 0 ? 1 : -1;
+                dy = 0;
+            }
+
+            finalNode = sniffer(head, dx, dy);
             if (!dt.isUndefined(finalNode)) break;
-            finalNode = sniffer(head, -1, 0);
+            finalNode = sniffer(head, -dy, dx);
             if (!dt.isUndefined(finalNode)) break;
-            finalNode = sniffer(head, 0, 1);
+            finalNode = sniffer(head, dy, -dx);
             if (!dt.isUndefined(finalNode)) break;
-            finalNode = sniffer(head, 0, -1);
+            finalNode = sniffer(head, -dx, -dy);
             if (!dt.isUndefined(finalNode)) break;
         }
 
