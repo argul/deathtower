@@ -9,6 +9,7 @@ dt.registerClassInheritance('dt.Class', function () {
             this.height = height;
             this.tiles = dt.suger.genMatrix2D(width, height, dt.tileconst.TILE_WALL);
             this.fogs = dt.suger.genMatrix2D(width, height, true);
+            this.debugdata = dt.suger.genMatrix2D(width, height, {});
             this.contents = dt.suger.genMatrix2D(width, height, undefined);
             this.rooms = [];
             this.roomDict = {};
@@ -76,6 +77,16 @@ dt.registerClassInheritance('dt.Class', function () {
 
         isEmptyTile: function (x, y) {
             return dt.isUndefined(this.getContent(x, y));
+        },
+
+        getDebugData: function (x, y) {
+            return this.debugdata[y][x];
+        },
+        
+        clearDebugDestination: function () {
+            dt.functional.for2DMatrix(function (idx0, idx1, dbgdata) {
+                dbgdata.destination = undefined;
+            }, this.debugdata);
         }
     });
 });

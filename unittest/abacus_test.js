@@ -28,17 +28,15 @@ dt.abacus_test = function () {
         }
     });
 
-    var tmp = [];
-    var step = 0;
+    var ret = [];
     var endloop = function (x) {
-        if (step > 20) return true;
-        if (x.behaviorCode == dt.behaviorCode.DEFEATED) return true;
-        if (x.behaviorCode == dt.behaviorCode.LEAVE_TOWER) return true;
+        if (x.behavior == dt.behaviorCode.DEFEATED) return true;
+        if (x.behavior == dt.behaviorCode.LEAVE_TOWER) return true;
         return false;
     };
     do {
         var b = ins.tick();
-        tmp.push(b);
-        step += 1;
+        ret.push(b);
     } while (!endloop(b));
+    dt.print(ret);
 };

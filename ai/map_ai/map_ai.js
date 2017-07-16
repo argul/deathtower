@@ -23,7 +23,7 @@ dt.mapAICode = {
 
 dt.registerClassInheritance('dt.AIInterface', function () {
     dt.MapAI = dt.AIInterface.extend({
-        _VERBOSE: true,
+        _VERBOSE: false,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },
@@ -66,7 +66,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 }
             }
 
-            ret = this._tryExploreFog(connectivity);
+            ret = this._tryExploreFog();
             if (ret) return ret;
 
             if (!feeder.visibleDoors.isEmpty()) {
@@ -320,7 +320,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             return ret;
         },
 
-        _tryExploreFog: function (connectivity) {
+        _tryExploreFog: function () {
             var self = this;
             var fogs = [];
             var map = this.getAbacusRef().map;
@@ -365,6 +365,10 @@ dt.registerClassInheritance('dt.AIInterface', function () {
 
             var ret = this._pathBlazer(path);
             if (!ret) {
+                map.mapLevel.getDebugData(fogs[0].x, fogs[0].y).destination = {
+                    x: fogs[0].x,
+                    y: fogs[0].y
+                };
                 ret = [{
                     aicode: dt.mapAICode.MOVE,
                     path: path,

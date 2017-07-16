@@ -3,7 +3,7 @@
  */
 
 dt.mapvision = {
-    _VERBOSE: true,
+    _VERBOSE: false,
     ferret: function (mapLevel, posX, posY, range) {
         var ret = [];
         var self = this;
@@ -116,11 +116,14 @@ dt.mapvision = {
             }
         };
         spreadFunc(range, range, range);
-        dt.print('before:');
-        dt.debug.dumpAscIIMap(mapLevel, function (x, y) {
-            if (x == posX && y == posY) return 'X';
-            if (spread[(x + canvasPosX - posX) * 10000 + (y + canvasPosY - posY)]) return '@';
-        });
+
+        if (this._VERBOSE) {
+            dt.print('before:');
+            dt.debug.dumpAscIIMap(mapLevel, function (x, y) {
+                if (x == posX && y == posY) return 'X';
+                if (spread[(x + canvasPosX - posX) * 10000 + (y + canvasPosY - posY)]) return '@';
+            });
+        }
 
         var walls = {};
         Object.keys(spread).forEach(function (posXY) {
@@ -155,15 +158,18 @@ dt.mapvision = {
                 ret.push({x: mapX, y: mapY});
             }
         });
-        dt.print('after:');
-        dt.debug.dumpAscIIMap(mapLevel, function (x, y) {
-            if (x == posX && y == posY) return 'X';
-            if (mapLevel.getTile(x, y) < dt.tileconst.TILE_NOPASS
-                && ret.filter(function (t) {
-                    return t.x == x && t.y == y;
-                }).length > 0) return '!';
-            if (spread[(x + canvasPosX - posX) * 10000 + (y + canvasPosY - posY)]) return '@';
-        });
+
+        if (this._VERBOSE) {
+            dt.print('after:');
+            dt.debug.dumpAscIIMap(mapLevel, function (x, y) {
+                if (x == posX && y == posY) return 'X';
+                if (mapLevel.getTile(x, y) < dt.tileconst.TILE_NOPASS
+                    && ret.filter(function (t) {
+                        return t.x == x && t.y == y;
+                    }).length > 0) return '!';
+                if (spread[(x + canvasPosX - posX) * 10000 + (y + canvasPosY - posY)]) return '@';
+            });
+        }
 
         return ret;
     },

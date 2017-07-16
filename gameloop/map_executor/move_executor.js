@@ -4,7 +4,7 @@
 
 dt.registerClassInheritance('dt.Class', function () {
     dt.MapMoveExecutor = dt.Class.extend({
-        _VERBOSE: true,
+        _VERBOSE: false,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },
@@ -52,9 +52,9 @@ dt.registerClassInheritance('dt.Class', function () {
                     }
                 }
 
+                var interrupt = false;
                 var lighten = dt.mapvision.ferret(map.mapLevel, map.teamX, map.teamY, abacus.config.visRange);
                 if (lighten.length > 0) {
-                    var interrupt = false;
                     var self = this;
                     var fogs = [];
 
@@ -70,11 +70,6 @@ dt.registerClassInheritance('dt.Class', function () {
                         behavior: dt.behaviorCode.UPDATE_MAP,
                         fogs: fogs
                     });
-
-                    if (interrupt) {
-                        abacus.executeFeeder.interrupt = true;
-                        break;
-                    }
                 }
 
                 if (this._VERBOSE) {
@@ -83,7 +78,23 @@ dt.registerClassInheritance('dt.Class', function () {
                         if (x == map.teamX && y == map.teamY) {
                             return 'X';
                         }
+                        var dbgdata = map.mapLevel.getDebugData(x, y);
+                        if (dbgdata.destination
+                            && dbgdata.destination.x == x
+                            && dbgdata.destination.y == y) {
+                            return 'D';
+                        }
                     });
+                }
+
+                if (interrupt) {
+                    abacus.executeFeeder.interrupt = true;
+                    map.mapLevel.clearDebugDestination();
+                    break;
+                }
+
+                if (i == path.length - 1) {
+                    map.mapLevel.clearDebugDestination();
                 }
             }
 
