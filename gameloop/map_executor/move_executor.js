@@ -103,9 +103,7 @@ dt.registerClassInheritance('dt.Class', function () {
         },
 
         shouldInterrupt: function (decision, map, x, y) {
-            if (decision.targetFog
-                && decision.targetFog.x == x
-                && decision.targetFog.y == y) {
+            if (decision.terminator && decision.terminator(x, y)) {
                 return true;
             }
             return !dt.isUndefined(map.mapLevel.getContent(x, y));

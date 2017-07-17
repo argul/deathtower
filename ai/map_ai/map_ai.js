@@ -353,8 +353,9 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 dt.print("MapAI:_tryExploreFog fogX=" + fogs[0].x + " fogY=" + fogs[0].y);
             }
 
-            var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, fogs[0].x, fogs[0].y, function (m, x, y) {
-                if (x == fogs[0].x && y == fogs[0].y) { // only destination is fog
+            var targetFogX = fogs[0].x, targetFogY = fogs[0].y;
+            var path = dt.astar.seekPath(map.mapLevel, map.teamX, map.teamY, targetFogX, targetFogY, function (m, x, y) {
+                if (x == targetFogX && y == targetFogY) { // only destination is fog
                     return true;
                 }
                 else {
@@ -365,14 +366,16 @@ dt.registerClassInheritance('dt.AIInterface', function () {
 
             var ret = this._pathBlazer(path);
             if (!ret) {
-                map.mapLevel.getDebugData(fogs[0].x, fogs[0].y).destination = {
-                    x: fogs[0].x,
-                    y: fogs[0].y
+                map.mapLevel.getDebugData(targetFogX, targetFogY).destination = {
+                    x: targetFogX,
+                    y: targetFogY
                 };
                 ret = [{
                     aicode: dt.mapAICode.MOVE,
                     path: path,
-                    targetFog: {x: fogs[0].x, y: fogs[0].y}
+                    terminator: function () {
+                        return !map.mapLevel.isFog(targetFogX, targetFogY);
+                    }
                 }];
             }
 

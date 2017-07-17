@@ -6,7 +6,7 @@ dt.formula = {
     damage: function () {
         
     },
-    
+
     _getPercent: function (pct, min, max) {
         min = dt.isUndefined(min) ? 0 : min;
         max = dt.isUndefined(max) ? 0 : max;
@@ -15,7 +15,7 @@ dt.formula = {
         else if (ret > 1) return 1;
         else return ret;
     },
-    
+
     _getBool: function (pct, rnd) {
         return rnd.random01() <= this._getPercent(pct);
     }
