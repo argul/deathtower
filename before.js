@@ -2,27 +2,29 @@
  * Created by argulworm on 6/17/17.
  */
 
+"use strict";
+
 var dt = dt || {};
 
 dt.Class = function () {
 };
+var __g_initializing = false;
+var __g_fnTest = /xyz/.test(function () {
+    xyz;
+}) ? /\b_super\b/ : /.*/;
 dt.Class.extend = function (prop) {
     var _super = this.prototype;
 
     // Instantiate a base class (but only create the instance,
     // don't run the init constructor)
-    initializing = true;
+    __g_initializing = true;
     var prototype = Object.create(_super);
-    initializing = false;
-    fnTest = /xyz/.test(function () {
-        xyz;
-    }) ? /\b_super\b/ : /.*/;
-
+    __g_initializing = false;
     // Copy the properties over onto the new prototype
     for (var name in prop) {
         // Check if we're overwriting an existing function
         prototype[name] = typeof prop[name] == "function" &&
-        typeof _super[name] == "function" && fnTest.test(prop[name]) ?
+        typeof _super[name] == "function" && __g_fnTest.test(prop[name]) ?
             (function (name, fn) {
                 return function () {
                     var tmp = this._super;
@@ -45,7 +47,7 @@ dt.Class.extend = function (prop) {
     // The dummy class constructor
     function Class() {
         // All construction is actually done in the init method
-        if (!initializing) {
+        if (!__g_initializing) {
             if (this.ctor) {
                 this.ctor.apply(this, arguments);
             }
@@ -59,7 +61,7 @@ dt.Class.extend = function (prop) {
     Class.prototype.constructor = Class;
 
     // And make this class extendable
-    Class.extend = arguments.callee;
+    Class.extend = dt.Class.extend;
 
     return Class;
 };

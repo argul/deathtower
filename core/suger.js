@@ -209,6 +209,17 @@ dt.builtInExtension = function () {
             }
         };
     }
+    if (!Array.prototype.any) {
+        Array.prototype.any = function (f) {
+            dt.assert(dt.isFunction(f));
+            for (var i = 0; i < this.length; i++) {
+                if (f(this[i], i, this)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
     if (!Array.prototype.removeAll) {
         Array.prototype.removeAll = function (f) {
             var needRemove = [];

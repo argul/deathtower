@@ -8,13 +8,21 @@ dt.registerClassInheritance('dt.Class', function () {
             this.leftUnits = new dt.UnitGroup3x2(monster);
             this.rightUnits = new dt.UnitGroup3x2(teamdata);
             this.globalEffects = [];
-        }
+        },
+
+        getAllUnits: function () {
+            return this.leftUnits.getUnits().concat(this.rightUnits.getUnits());
+        },
     });
 });
 
 dt.registerClassInheritance('dt.Class', function () {
     dt.UnitGroup3x2 = dt.Class.extend({
         ctor: function () {
+        },
+        
+        getUnits: function () {
+            
         }
     });
 });
