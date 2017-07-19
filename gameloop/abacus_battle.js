@@ -8,10 +8,22 @@ dt.registerClassInheritance('dt.Class', function () {
             this.battleground = new dt.Battleground(teamdata);
         },
 
-        tickOneRound: function () {
+        tickRound: function () {
             var allunits = this.battleground.getAllUnits();
             while (allunits.length > 0) {
-                allunits.sort();
+                allunits.sort(function (lhr, rhr) {
+                    return rhr.finalAttrs.speed - lhr.finalAttrs.speed;
+                });
+                var u = allunits.shift();
+                while (u.isDead() && allunits.length > 0) {
+                    u = allunits.shift();
+                }
+
+                if (u.isDead()) {
+                    break;
+                }
+
+                
 
                 allunits = this.removeDeadUnits(allunits);
             }
@@ -19,11 +31,11 @@ dt.registerClassInheritance('dt.Class', function () {
 
         removeDeadUnits: function (arr) {
             var b = arr.any(function (x) {
-                return x.isDead;
+                return x.isDead();
             });
             if (b) {
                 return arr.filter(function (x) {
-                    return !x.isDead;
+                    return !x.isDead();
                 });
             }
             else {
