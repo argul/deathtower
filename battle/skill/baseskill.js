@@ -32,7 +32,7 @@ dt.registerClassInheritance('dt.Cls', function () {
             this._buildJudgers().forEach(function (x) {
                 node.appendJudger(x);
             });
-            node.setTrueClauseNode(this._doPerform())
+            node.setTrueClauseNode(this._buildActionNode())
             node.setFalseClauseNode(dt.sharedBHNodes.voidAction);
             return node;
         },
@@ -41,7 +41,7 @@ dt.registerClassInheritance('dt.Cls', function () {
             return [];
         },
 
-        _doPerform: function () {
+        _buildActionNode: function () {
             dt.assert(false);
         }
     });

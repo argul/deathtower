@@ -10,5 +10,7 @@ dt.skilldata.basicAttack = {
         hasCooldown: false,
         cooldownRounds: 0,
         initialCooldown: 0
-    }
+    },
+    attr: "patk",
+    powerfactor: 1.0
 };
