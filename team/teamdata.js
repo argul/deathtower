@@ -2,8 +2,8 @@
  * Created by argulworm on 7/6/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.TeamData = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.TeamData = dt.Cls.extend({
         ctor: function (enterData) {
 
         },
@@ -14,6 +14,6 @@ dt.registerClassInheritance('dt.Class', function () {
     })
 });
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.TeamEnterData = dt.Class.extend({})
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.TeamEnterData = dt.Cls.extend({})
 });

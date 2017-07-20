@@ -2,8 +2,8 @@
  * Created by argulworm on 6/29/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.MapMoveExecutor = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.MapMoveExecutor = dt.Cls.extend({
         _VERBOSE: false,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;

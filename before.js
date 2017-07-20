@@ -6,23 +6,43 @@
 
 var dt = dt || {};
 
-dt.Class = function () {
+dt.Cls = function () {
 };
 var __g_initializing = false;
-dt.Class.extend = function (prop) {
+dt.Cls.extend = function (prop) {
+    var _super = this.prototype;
+
     // Instantiate a base class (but only create the instance,
     // don't run the init constructor)
     __g_initializing = true;
-    var prototype = Object.create(this.prototype);
+    var prototype = Object.create(_super);
     __g_initializing = false;
     // Copy the properties over onto the new prototype
     for (var name in prop) {
         // Check if we're overwriting an existing function
-        prototype[name] = prop[name];
+        prototype[name] = (typeof prop[name] == "function" &&
+        typeof _super[name] == "function") ?
+            (function (name, fn) {
+                return function () {
+                    var tmp = this._super;
+
+                    // Add a new ._super() method that is the same method
+                    // but on the super-class
+                    this._super = _super[name];
+
+                    // The method only need to be bound temporarily, so we
+                    // remove it when we're done executing
+                    var ret = fn.apply(this, arguments);
+                    this._super = tmp;
+
+                    return ret;
+                };
+            })(name, prop[name]) :
+            prop[name];
     }
 
     // The dummy class constructor
-    function Class() {
+    function Cls() {
         // All construction is actually done in the init method
         if (!__g_initializing) {
             if (this.ctor) {
@@ -32,15 +52,15 @@ dt.Class.extend = function (prop) {
     }
 
     // Populate our constructed prototype object
-    Class.prototype = prototype;
+    Cls.prototype = prototype;
 
     // Enforce the constructor to be what we expect
-    Class.prototype.constructor = Class;
+    Cls.prototype.constructor = Cls;
 
     // And make this class extendable
-    Class.extend = dt.Class.extend;
+    Cls.extend = dt.Cls.extend;
 
-    return Class;
+    return Cls;
 };
 
 dt.__pendingClassDefiners = [];

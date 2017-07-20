@@ -2,8 +2,8 @@
  * Created by argulworm on 6/29/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.AbacusGameloop = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.AbacusGameloop = dt.Cls.extend({
         _VERBOSE: false,
         MODE_MAP: 'MODE_MAP',
         MODE_BATTLE: 'MODE_BATTLE',

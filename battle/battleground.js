@@ -2,8 +2,8 @@
  * Created by argulworm on 7/17/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.Battleground = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.Battleground = dt.Cls.extend({
         ctor: function (teamdata, monster) {
             this.leftUnits = new dt.UnitGroup3x2(monster);
             this.rightUnits = new dt.UnitGroup3x2(teamdata);
@@ -16,8 +16,8 @@ dt.registerClassInheritance('dt.Class', function () {
     });
 });
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.UnitGroup3x2 = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.UnitGroup3x2 = dt.Cls.extend({
         ctor: function () {
         },
         

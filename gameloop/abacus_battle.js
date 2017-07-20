@@ -2,8 +2,8 @@
  * Created by argulworm on 7/17/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.AbacusBattle = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.AbacusBattle = dt.Cls.extend({
         ctor: function (teamdata) {
             this.battleground = new dt.Battleground(teamdata);
         },
@@ -23,13 +23,17 @@ dt.registerClassInheritance('dt.Class', function () {
                     break;
                 }
 
-                
+                this._tickUnit(u);
 
-                allunits = this.removeDeadUnits(allunits);
+                allunits = this._removeDeadUnits(allunits);
             }
         },
 
-        removeDeadUnits: function (arr) {
+        _tickUnit: function (unit) {
+
+        },
+
+        _removeDeadUnits: function (arr) {
             var b = arr.any(function (x) {
                 return x.isDead();
             });

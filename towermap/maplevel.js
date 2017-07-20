@@ -2,8 +2,8 @@
  * Created by argulworm on 6/29/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.MapLevel = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.MapLevel = dt.Cls.extend({
         ctor: function (width, height) {
             this.width = width;
             this.height = height;

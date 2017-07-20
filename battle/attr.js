@@ -2,8 +2,8 @@
  * Created by argulworm on 6/28/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.BaseAttr = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.BaseAttr = dt.Cls.extend({
         ctor: function () {
             this.hp = 0;//血量
             this.mp = 0;//蓝量
@@ -20,8 +20,8 @@ dt.registerClassInheritance('dt.Class', function () {
     });
 });
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.AdvancedAttr = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.AdvancedAttr = dt.Cls.extend({
         ctor: function () {
             this.critfactor_pct = 0;//暴击伤害
             this.anticrit_pct = 0;//降低被暴击几率

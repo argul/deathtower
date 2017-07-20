@@ -2,14 +2,14 @@
  * Created by argulworm on 7/18/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.Unit = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.Unit = dt.Cls.extend({
         ctor: function () {
-            this.isDead = false;
+            this.dead = false;
         },
 
         isDead: function () {
-            return this.isDead;
+            return this.dead;
         }
     });
 });

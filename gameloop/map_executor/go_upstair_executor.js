@@ -2,8 +2,8 @@
  * Created by argulworm on 7/13/17.
  */
 
-dt.registerClassInheritance('dt.Class', function () {
-    dt.MapGoUpstairExecutor = dt.Class.extend({
+dt.registerClassInheritance('dt.Cls', function () {
+    dt.MapGoUpstairExecutor = dt.Cls.extend({
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },
