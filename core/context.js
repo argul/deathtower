@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.Context = dt.Cls.inherit({
+    dt.Context = dt.Cls.extend({
         ctor: function (seed) {
             this.random = new dt.Random(seed);
         }

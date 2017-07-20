@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.BattleUnit = dt.Cls.inherit({
+    dt.BattleUnit = dt.Cls.extend({
         ctor: function (uid, udata) {
             this._dead = false;
             this._uid = uid;

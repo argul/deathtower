@@ -9,7 +9,7 @@ var dt = dt || {};
 dt.Cls = function () {
 };
 var __g_initializing = false;
-dt.Cls.inherit = function (prop) {
+dt.Cls.extend = function (prop) {
     var _super = this.prototype;
 
     // Instantiate a base class (but only create the instance,
@@ -58,7 +58,7 @@ dt.Cls.inherit = function (prop) {
     Cls.prototype.constructor = Cls;
 
     // And make this class extendable
-    Cls.inherit = dt.Cls.inherit;
+    Cls.extend = dt.Cls.extend;
 
     return Cls;
 };

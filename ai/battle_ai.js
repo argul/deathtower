@@ -7,11 +7,22 @@ dt.battleAICode = {
 };
 
 dt.registerClassInheritance('dt.AIInterface', function () {
-    dt.BattleAI = dt.AIInterface.inherit({
+    dt.BattleAI = dt.AIInterface.extend({
         _VERBOSE: false,
         ctor: function (myUnit, abacusRef) {
-            this.myUnit = myUnit;
+            this._myUnit = myUnit;
             this._abacusRef = abacusRef;
+            this._initBHTree();
+        },
+
+        _initBHTree: function () {
+            var tree = new dt.BHTree("bhtree" + this._myUnit.unitId());
+            var allskills = this._myUnit.allSkills();
+            dt.assert(allskills.length > 0);
+            allskills.forEach(function (sk) {
+                tree.appendNode(sk.buildBHNode());
+            });
+            this._bhtree = tree;
         },
 
         getAbacusRef: function () {
@@ -19,10 +30,7 @@ dt.registerClassInheritance('dt.AIInterface', function () {
         },
 
         makeDecision: function () {
-            if (!this.myUnit.canTakeAction())
-                return [];
-
-            
+            return this._bhtree.propagate();
         }
     });
 });

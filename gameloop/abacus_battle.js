@@ -3,11 +3,11 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.AbacusBattle = dt.Cls.inherit({
+    dt.AbacusBattle = dt.Cls.extend({
         ctor: function (teamdata) {
             var self = this;
             this.battleground = new dt.Battleground(teamdata);
-            
+
             var allunits = this.battleground.getAllUnits();
             this.aiMap = {};
             allunits.forEach(function (x) {
@@ -37,8 +37,10 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
 
         _tickUnit: function (unit) {
-            var ai = this.aiMap[unit.unitId()];
-            var decisions = ai.makeDecision();
+            if (unit.canTakeAction()) {
+                var ai = this.aiMap[unit.unitId()];
+                var decisions = ai.makeDecision();
+            }
         },
 
         _removeDeadUnits: function (arr) {
@@ -53,6 +55,14 @@ dt.registerClassInheritance('dt.Cls', function () {
             else {
                 return arr;
             }
+        },
+
+        _onWillStartOneRound: function () {
+
+        },
+
+        _onDidFinishOneRound: function () {
+
         }
     });
 });

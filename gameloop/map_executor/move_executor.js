@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.MapMoveExecutor = dt.Cls.inherit({
+    dt.MapMoveExecutor = dt.Cls.extend({
         _VERBOSE: false,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
