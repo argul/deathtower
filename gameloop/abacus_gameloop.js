@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.AbacusGameloop = dt.Cls.extend({
+    dt.AbacusGameloop = dt.Cls.inherit({
         _VERBOSE: false,
         MODE_MAP: 'MODE_MAP',
         MODE_BATTLE: 'MODE_BATTLE',

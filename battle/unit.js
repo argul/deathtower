@@ -3,13 +3,27 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.Unit = dt.Cls.extend({
-        ctor: function () {
-            this.dead = false;
+    dt.BattleUnit = dt.Cls.inherit({
+        ctor: function (uid, udata) {
+            this._dead = false;
+            this._uid = uid;
+            this._skills = [];
+        },
+
+        unitId: function () {
+            return this._uid;
         },
 
         isDead: function () {
-            return this.dead;
+            return this._dead;
+        },
+
+        canTakeAction: function () {
+            return true;
+        },
+
+        allSkills : function () {
+            return this._skills;
         }
     });
 });

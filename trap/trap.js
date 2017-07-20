@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.BaseTrap = dt.Cls.extend({
+    dt.BaseTrap = dt.Cls.inherit({
         disarm: function (teamData) {
             dt.assert(false);
         }

@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.TeamData = dt.Cls.extend({
+    dt.TeamData = dt.Cls.inherit({
         ctor: function (enterData) {
 
         },
@@ -15,5 +15,5 @@ dt.registerClassInheritance('dt.Cls', function () {
 });
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.TeamEnterData = dt.Cls.extend({})
+    dt.TeamEnterData = dt.Cls.inherit({})
 });

@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.Battleground = dt.Cls.extend({
+    dt.Battleground = dt.Cls.inherit({
         ctor: function (teamdata, monster) {
             this.leftUnits = new dt.UnitGroup3x2(monster);
             this.rightUnits = new dt.UnitGroup3x2(teamdata);
@@ -17,7 +17,7 @@ dt.registerClassInheritance('dt.Cls', function () {
 });
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.UnitGroup3x2 = dt.Cls.extend({
+    dt.UnitGroup3x2 = dt.Cls.inherit({
         ctor: function () {
         },
         

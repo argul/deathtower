@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.MapGoUpstairExecutor = dt.Cls.extend({
+    dt.MapGoUpstairExecutor = dt.Cls.inherit({
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;
         },

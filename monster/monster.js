@@ -3,5 +3,5 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.BaseMonster = dt.Cls.extend({});
+    dt.BaseMonster = dt.Cls.inherit({});
 });

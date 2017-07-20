@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.MapLevel = dt.Cls.extend({
+    dt.MapLevel = dt.Cls.inherit({
         ctor: function (width, height) {
             this.width = width;
             this.height = height;

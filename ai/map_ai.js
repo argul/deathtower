@@ -22,7 +22,7 @@ dt.mapAICode = {
 };
 
 dt.registerClassInheritance('dt.AIInterface', function () {
-    dt.MapAI = dt.AIInterface.extend({
+    dt.MapAI = dt.AIInterface.inherit({
         _VERBOSE: false,
         ctor: function (abacusRef) {
             this._abacusRef = abacusRef;

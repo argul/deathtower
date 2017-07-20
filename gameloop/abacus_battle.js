@@ -3,9 +3,16 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.AbacusBattle = dt.Cls.extend({
+    dt.AbacusBattle = dt.Cls.inherit({
         ctor: function (teamdata) {
+            var self = this;
             this.battleground = new dt.Battleground(teamdata);
+            
+            var allunits = this.battleground.getAllUnits();
+            this.aiMap = {};
+            allunits.forEach(function (x) {
+                self.aiMap[x.unitId()] = new dt.BattleAI(x, self);
+            });
         },
 
         tickRound: function () {
@@ -30,7 +37,8 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
 
         _tickUnit: function (unit) {
-
+            var ai = this.aiMap[unit.unitId()];
+            var decisions = ai.makeDecision();
         },
 
         _removeDeadUnits: function (arr) {

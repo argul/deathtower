@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.Cls', function () {
-    dt.AIInterface = dt.Cls.extend({
+    dt.AIInterface = dt.Cls.inherit({
         reset: function () {
             dt.assert(false);
         },
