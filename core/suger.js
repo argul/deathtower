@@ -43,6 +43,54 @@ dt.print = function (any) {
     }
 };
 
+dt.array_any = function (arr, f) {
+    dt.assert(dt.isFunction(f));
+    for (var i = 0; i < arr.length; i++) {
+        if (f(arr[i], i, arr)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+dt.array_removeall = function (arr, f) {
+    var needRemove = [];
+    for (var i = arr.length - 1; i >= 0; i++) {
+        if (dt.isFunction(f)) {
+            if (f(arr[i], i, arr)) {
+                needRemove.push(i);
+            }
+        }
+        else {
+            if (f === this[i]) {
+                needRemove.push(i);
+            }
+        }
+    }
+    for (var i = 0; i < needRemove.length; i++) {
+        arr.splice(needRemove[i]);
+    }
+};
+
+dt.object_values = function (obj) {
+    var ret = [];
+    for (var propName in obj) {
+        if (obj.hasOwnProperty(propName)) {
+            ret.push(obj[propName])
+        }
+    }
+    return ret;
+};
+
+dt.object_empty = function (obj) {
+    for (var propName in obj) {
+        if (obj.hasOwnProperty(propName)) {
+            return false;
+        }
+    }
+    return true;
+};
+
 dt.suger = {
     genArray: function (size, defaultValue) {
         var ret = new Array(size);
@@ -191,75 +239,3 @@ dt.functional = {
         }
     }
 };
-
-dt.builtInExtension = function () {
-    if (!Array.prototype.removeFirst) {
-        Array.prototype.removeFirst = function (f) {
-            for (var i = 0; i < this.length; i++) {
-                if (dt.isFunction(f)) {
-                    if (f(this[i], i)) {
-                        this.splice(i);
-                    }
-                }
-                else {
-                    if (f === this[i]) {
-                        this.splice(i);
-                    }
-                }
-            }
-        };
-    }
-    if (!Array.prototype.any) {
-        Array.prototype.any = function (f) {
-            dt.assert(dt.isFunction(f));
-            for (var i = 0; i < this.length; i++) {
-                if (f(this[i], i, this)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-    if (!Array.prototype.removeAll) {
-        Array.prototype.removeAll = function (f) {
-            var needRemove = [];
-            for (var i = this.length - 1; i >= 0; i++) {
-                if (dt.isFunction(f)) {
-                    if (f(this[i], i)) {
-                        needRemove.push(i);
-                    }
-                }
-                else {
-                    if (f === this[i]) {
-                        needRemove.push(i);
-                    }
-                }
-            }
-            for (var i = 0; i < needRemove.length; i++) {
-                this.splice(needRemove[i]);
-            }
-        };
-    }
-    if (!Object.prototype.values) {
-        Object.prototype.values = function () {
-            var ret = [];
-            for (var propName in this) {
-                if (this.hasOwnProperty(propName)) {
-                    ret.push(this[propName])
-                }
-            }
-            return ret;
-        };
-    }
-    if (!Object.prototype.isEmpty) {
-        Object.prototype.isEmpty = function () {
-            for (var propName in this) {
-                if (this.hasOwnProperty(propName)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-};
-dt.builtInExtension();

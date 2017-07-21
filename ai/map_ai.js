@@ -39,8 +39,8 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             var team = this.getAbacusRef().teamData;
             var connectivity = dt.dijkstra.BFS(map.mapLevel, map.teamX, map.teamY, this._makeConnectJudge(false, false));
 
-            if (!feeder.visibleTreasures.isEmpty()) {
-                var treasures = feeder.visibleTreasures.values();
+            if (!dt.object_empty(feeder.visibleTreasures)) {
+                var treasures = dt.object_values(feeder.visibleTreasures);
                 treasures = this._sortTreasures(treasures, connectivity);
                 for (var i = 0; i < treasures.length; i++) {
                     ret = this._tryTreasure(treasures[i], connectivity);
@@ -48,8 +48,8 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 }
             }
 
-            if (!feeder.visibleLoots.isEmpty()) {
-                var loots = feeder.visibleLoots.values();
+            if (!dt.object_empty(feeder.visibleLoots)) {
+                var loots = dt.object_values(feeder.visibleLoots);
                 loots = this._sortLoots(loots, connectivity);
                 for (var i = 0; i < loots.length; i++) {
                     ret = this._tryLoot(loots[i], connectivity);
@@ -57,8 +57,8 @@ dt.registerClassInheritance('dt.AIInterface', function () {
                 }
             }
 
-            if (!feeder.visibleMonsters.isEmpty()) {
-                var monsters = feeder.visibleMonsters.values();
+            if (!dt.object_empty(feeder.visibleMonsters)) {
+                var monsters = dt.object_values(feeder.visibleMonsters);
                 monsters = this._sortMonsters(monsters, connectivity);
                 for (var i = 0; i < monsters.length; i++) {
                     ret = this._tryMonster(monsters[i], connectivity);
@@ -69,8 +69,8 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             ret = this._tryExploreFog();
             if (ret) return ret;
 
-            if (!feeder.visibleDoors.isEmpty()) {
-                var doors = feeder.visibleDoors.values();
+            if (!dt.object_empty(feeder.visibleDoors)) {
+                var doors = dt.object_values(feeder.visibleDoors);
                 doors = this._sortDoors(doors, connectivity);
                 for (var i = 0; i < doors.length; i++) {
                     ret = this._tryDoor(doors[i], connectivity);

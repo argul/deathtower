@@ -9,6 +9,11 @@ dt.registerClassInheritance('dt.Cls', function () {
             this.cooldownRounds = skilldata.cooldown.cooldownRounds;
             this.cooldownLeft = skilldata.cooldown.initialCooldown;
             this.level = skilldata.level;
+            this.effects = [];
+        },
+
+        _initEffects: function () {
+
         },
 
         skillLevel: function () {

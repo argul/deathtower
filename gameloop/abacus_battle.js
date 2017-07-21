@@ -44,7 +44,7 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
 
         _removeDeadUnits: function (arr) {
-            var b = arr.any(function (x) {
+            var b = dt.array_any(arr, function (x) {
                 return x.isDead();
             });
             if (b) {
