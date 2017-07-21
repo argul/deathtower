@@ -4,7 +4,8 @@
 
 dt.registerClassInheritance('dt.Cls', function () {
     dt.AbacusBattle = dt.Cls.extend({
-        ctor: function (teamdata) {
+        ctor: function (abacusId, teamdata) {
+            this.abacusId = abacusId;
             var self = this;
             this.battleground = new dt.Battleground(teamdata);
 
