@@ -3,7 +3,7 @@
  */
 
 dt.mapassemble = {
-    makeStairs: function (mapLevel, ctx) {
+    makeStairs: function (mapLevel, rnd) {
         var availList = [];
         mapLevel.foreachTile(function (x, y, tile) {
             if (tile == dt.tileconst.TILE_CORRIDOR) {
@@ -21,7 +21,7 @@ dt.mapassemble = {
             }
         });
         dt.assert(availList.length >= 2);
-        dt.suger.shuffle(availList, ctx);
+        dt.suger.shuffle(availList, rnd);
         var up = {
             x: Math.floor(availList[0] / 10000),
             y: availList[0] % 10000

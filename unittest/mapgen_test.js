@@ -3,7 +3,7 @@
  */
 
 dt.mapgen_test = function () {
-    var ctx = new dt.Context(0);
+    var rnd = new dt.random.Random(0);
     var mapConfig = {
         width: 35,
         height: 35,
@@ -17,7 +17,7 @@ dt.mapgen_test = function () {
         doorNumProbability: [0.4, 0.4, 0.15, 0.05]
     };
 
-    var mapLevel = dt.mapgen.generateMapLevel(mapConfig, ctx);
-    dt.mapassemble.makeStairs(mapLevel, ctx);
+    var mapLevel = dt.mapgen.generateMapLevel(mapConfig, rnd);
+    dt.mapassemble.makeStairs(mapLevel, rnd);
     dt.debug.dumpAscIIMap(mapLevel);
 };

@@ -20,7 +20,7 @@ dt.abacus_test = function () {
         abacusId: 'test',
         seed: 0,
         mapConfig: mapConfig,
-        maxLevel: 1,
+        maxLevel: 2,
         visRange: 5,
         teamEnterData: new dt.TeamEnterData(),
         customized: {

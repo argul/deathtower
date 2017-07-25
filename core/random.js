@@ -35,7 +35,7 @@ dt.Random = function (seed) {
             return this.random01() < 0.5;
         },
 
-        randomPick: function (any) {
+        randomChoice: function (any) {
             if (dt.isArray(any)) {
                 dt.assert(any.length > 0);
                 return any[this.randomInt(0, any.length - 1)];

@@ -4,7 +4,7 @@
 
 dt.mapgen = {
     _VERBOSE: false,
-    generateMapLevel: function (mapConfig, ctx) {
+    generateMapLevel: function (mapConfig, rnd) {
         var self = this;
         var mapLevel = new dt.MapLevel(mapConfig.width, mapConfig.height);
         for (var i = 1; i <= mapConfig.width - 2; i += 2) {
@@ -13,7 +13,7 @@ dt.mapgen = {
             }
         }
 
-        var rooms = this._genRooms(mapConfig, ctx);
+        var rooms = this._genRooms(mapConfig, rnd);
         rooms.forEach(function (r) {
             mapLevel.addRoom(r);
         });
@@ -26,7 +26,7 @@ dt.mapgen = {
         var paramPack = {
             mapLevel: mapLevel,
             mapConfig: mapConfig,
-            ctx: ctx
+            rnd: rnd
         };
         this._carveMaze(paramPack);
         if (this._VERBOSE) {
@@ -49,8 +49,8 @@ dt.mapgen = {
         return mapLevel;
     },
 
-    _genRooms: function (mapConfig, ctx) {
-        var roomNumber = ctx.random.randomInt(mapConfig.minRoomNumber, mapConfig.maxRoomNumber);
+    _genRooms: function (mapConfig, rnd) {
+        var roomNumber = rnd.randomInt(mapConfig.minRoomNumber, mapConfig.maxRoomNumber);
         var rooms = [];
 
         var roomOk = false;
@@ -65,11 +65,11 @@ dt.mapgen = {
                         roomId: i,
                         x: 0,
                         y: 0,
-                        width: ctx.random.randomOdd(mapConfig.minRoomWidth, mapConfig.maxRoomWidth),
-                        height: ctx.random.randomOdd(mapConfig.minRoomHeight, mapConfig.maxRoomHeight),
+                        width: rnd.randomOdd(mapConfig.minRoomWidth, mapConfig.maxRoomWidth),
+                        height: rnd.randomOdd(mapConfig.minRoomHeight, mapConfig.maxRoomHeight),
                     };
-                    r.x = ctx.random.randomEven(0, mapConfig.width - r.width);
-                    r.y = ctx.random.randomEven(0, mapConfig.height - r.height);
+                    r.x = rnd.randomEven(0, mapConfig.width - r.width);
+                    r.y = rnd.randomEven(0, mapConfig.height - r.height);
                     if (this._tryScatterRoom(r, rooms)) {
                         rooms.push(r);
                     }
@@ -133,7 +133,7 @@ dt.mapgen = {
                 mazeStack.shift();
             }
             else {
-                var choice = paramPack.ctx.random.randomPick(t);
+                var choice = paramPack.rnd.randomChoice(t);
                 mazeStack.unshift({
                     x: choice[0],
                     y: choice[1]
@@ -195,8 +195,8 @@ dt.mapgen = {
                     }
                 }
             }
-            canBeDoors = dt.suger.shuffle(canBeDoors, paramPack.ctx);
-            var doorNum = self._getDoorNumber(paramPack.mapConfig, paramPack.ctx);
+            canBeDoors = dt.suger.shuffle(canBeDoors, paramPack.rnd);
+            var doorNum = self._getDoorNumber(paramPack.mapConfig, paramPack.rnd);
             for (var i = 0; i < doorNum && i < canBeDoors.length; i++) {
                 var doorX = canBeDoors[i].x;
                 var doorY = canBeDoors[i].y;
@@ -205,13 +205,13 @@ dt.mapgen = {
         });
     },
 
-    _getDoorNumber: function (mapConfig, ctx) {
+    _getDoorNumber: function (mapConfig, rnd) {
         var total = 0;
         mapConfig.doorNumProbability.forEach(function (x) {
             total += x;
         });
         dt.assert(Math.abs(total - 1.0) < 0.0001);
-        var f = ctx.random.random01();
+        var f = rnd.random01();
         for (var i = 0; i < mapConfig.doorNumProbability.length; i++) {
             f -= mapConfig.doorNumProbability[i];
             if (f <= 0) {

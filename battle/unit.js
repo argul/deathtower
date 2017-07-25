@@ -8,6 +8,7 @@ dt.registerClassInheritance('dt.Cls', function () {
             this._dead = false;
             this._uid = uid;
             this._skills = [];
+            this._finalattrs = {};
         },
 
         unitId: function () {
@@ -24,6 +25,10 @@ dt.registerClassInheritance('dt.Cls', function () {
 
         allSkills : function () {
             return this._skills;
+        },
+
+        finalAttrs: function () {
+            return this._finalattrs;
         }
     });
 });

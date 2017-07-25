@@ -5,15 +5,14 @@
 dt.skilldata = dt.skilldata || {};
 
 dt.skilldata.basicAttack = {
-    level: 0,
     cooldown: {
         hasCooldown: false,
         cooldownRounds: 0,
         initialCooldown: 0
     },
-    attr: "patk",
-    powerfactor: 1.0,
     effects: [{
-        code: dt.effectcode.PHYSICAL_DAMAGE
+        attr: "patk",
+        powerfactor: 1.0,
+        effectcode: dt.effectcode.PHYSICAL_DAMAGE
     }]
 };

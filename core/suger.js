@@ -126,10 +126,10 @@ dt.suger = {
         }
     },
 
-    shuffle: function (arr, ctx) {
+    shuffle: function (arr, rnd) {
         var len = arr.length;
         for (var i = 0; i < len - 1; i++) {
-            var idx = ctx.random.randomInt(0, len - i - 1);
+            var idx = rnd.randomInt(0, len - i - 1);
             idx = (idx >= len) ? (len - 1) : idx;
             var temp = arr[idx];
             arr[idx] = arr[len - i - 1];

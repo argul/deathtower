@@ -9,68 +9,22 @@ dt.registerClassInheritance('dt.Cls', function () {
         MODE_BATTLE: 'MODE_BATTLE',
         ctor: function (paramsPack) {
             this.abacusId = paramsPack.abacusId;
-            this.ctx = new dt.Context(paramsPack.seed);
-            this.behaviors = [];
-            this.config = {};
-            this.map = {};
-            this.battle = {};
-            this.teamData = new dt.TeamData(paramsPack.teamEnterData);
-            this.customized = paramsPack.customized;
+            this.rnd = new dt.Random(paramsPack.seed);
+            this.behaviors = [{
+                behaviorCode: dt.behaviorCode.ENTER_TOWER
+            }];
 
+            this.config = {};
             this.config.mapConfig = paramsPack.mapConfig;
             this.config.maxLevel = paramsPack.maxLevel;
             this.config.visRange = paramsPack.visRange;
 
-            this.map.curLevel = 1;
-            var mapLevel = dt.mapgen.generateMapLevel(paramsPack.mapConfig, this.ctx);
-            this.map.mapLevel = mapLevel;
-            var stairs = dt.mapassemble.makeStairs(mapLevel, this.ctx);
-            this.map.upstair = stairs.up;
-            this.map.downstair = stairs.down;
-            this.map.teamX = stairs.down.x;
-            this.map.teamY = stairs.down.y;
+            this.teamData = new dt.TeamData(paramsPack.teamEnterData);
+            this.customized = paramsPack.customized;
 
-            this.mapAI = new dt.MapAI(this);
-            this.aiFeeder = {
-                visibleLoots: {},
-                visibleMonsters: {},
-                visibleTreasures: {},
-                visibleTraps: {},
-                visibleDoors: {}
-            };
-            this.executeFeeder = {
-                interrupt: false
-            };
+            this.battle = {};
 
-            this.mapExecutors = {};
-            // todo
-            this.mapExecutors[dt.mapAICode.MOVE] = new dt.MapMoveExecutor(this);
-            this.mapExecutors[dt.mapAICode.GO_UPSTAIR] = new dt.MapGoUpstairExecutor(this);
-
-            this.behaviors.push({
-                behaviorCode: dt.behaviorCode.ENTER_TOWER
-            });
-
-            this.behaviors.push({
-                behaviorCode: dt.behaviorCode.ENTER_MAP,
-                x: stairs.down.x,
-                y: stairs.down.y,
-                mapLevel: mapLevel
-            });
-
-            var self = this;
-            var lighten = dt.mapvision.ferret(mapLevel, this.map.teamX, this.map.teamY, this.config.visRange);
-            if (lighten.length > 0) {
-                var b = {
-                    behavior: dt.behaviorCode.UPDATE_MAP,
-                    fogs: []
-                };
-                lighten.forEach(function (xy) {
-                    self.doClearFog(xy.x, xy.y);
-                    b.fogs.push(xy);
-                });
-                this.behaviors.push(b);
-            }
+            this._enterNewMapLevel(1);
         },
 
         tick: function () {
@@ -137,13 +91,59 @@ dt.registerClassInheritance('dt.Cls', function () {
                     });
                 }
                 else {
-                    this._generateNewMapLevel();
+                    this._enterNewMapLevel(this.map.curLevel + 1);
                 }
             }
         },
 
-        _generateNewMapLevel: function () {
+        _enterNewMapLevel: function (level) {
+            this.map = {};
+            this.map.curLevel = level;
+            var mapLevel = dt.mapgen.generateMapLevel(this.config.mapConfig, this.rnd);
+            this.map.mapLevel = mapLevel;
+            var stairs = dt.mapassemble.makeStairs(mapLevel, this.rnd);
+            this.map.upstair = stairs.up;
+            this.map.downstair = stairs.down;
+            this.map.teamX = stairs.down.x;
+            this.map.teamY = stairs.down.y;
+
+            this.mapAI = new dt.MapAI(this);
+            this.aiFeeder = {
+                visibleLoots: {},
+                visibleMonsters: {},
+                visibleTreasures: {},
+                visibleTraps: {},
+                visibleDoors: {}
+            };
+            this.executeFeeder = {
+                interrupt: false
+            };
+
+            this.mapExecutors = {};
             // todo
+            this.mapExecutors[dt.mapAICode.MOVE] = new dt.MapMoveExecutor(this);
+            this.mapExecutors[dt.mapAICode.GO_UPSTAIR] = new dt.MapGoUpstairExecutor(this);
+
+            this.behaviors.push({
+                behaviorCode: dt.behaviorCode.ENTER_MAP,
+                x: stairs.down.x,
+                y: stairs.down.y,
+                mapLevel: mapLevel
+            });
+
+            var self = this;
+            var lighten = dt.mapvision.ferret(mapLevel, this.map.teamX, this.map.teamY, this.config.visRange);
+            if (lighten.length > 0) {
+                var b = {
+                    behavior: dt.behaviorCode.UPDATE_MAP,
+                    fogs: []
+                };
+                lighten.forEach(function (xy) {
+                    self.doClearFog(xy.x, xy.y);
+                    b.fogs.push(xy);
+                });
+                this.behaviors.push(b);
+            }
         }
     });
 });

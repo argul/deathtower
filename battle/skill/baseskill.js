@@ -8,15 +8,10 @@ dt.registerClassInheritance('dt.Cls', function () {
             this.hasCooldown = skilldata.cooldown.hasCooldown;
             this.cooldownRounds = skilldata.cooldown.cooldownRounds;
             this.cooldownLeft = skilldata.cooldown.initialCooldown;
-            this.level = skilldata.level;
-            this.effects = skilldata.effects;
+            this._buildupEffects(skilldata.effects);
         },
 
-        skillLevel: function () {
-            return this.level;
-        },
-
-        canPerform: function () {
+        isInCooldown: function () {
             if (!this.hasCooldown)
                 return false;
             if (this.cooldownLeft > 0)
@@ -24,26 +19,23 @@ dt.registerClassInheritance('dt.Cls', function () {
             return true;
         },
 
-        buildBHNode: function () {
-            var self = this;
-            var node = new dt.BHNodeCondAll("skill");
-            node.appendJudger(function () {
-                return self.canPerform();
-            });
-            this._buildJudgers().forEach(function (x) {
-                node.appendJudger(x);
-            });
-            node.setTrueClauseNode(this._buildActionNode())
-            node.setFalseClauseNode(dt.sharedBHNodes.voidAction);
-            return node;
-        },
-
-        _buildJudgers: function () {
-            return [];
-        },
-
-        _buildActionNode: function () {
+        canUse: function () {
             dt.assert(false);
+        },
+
+        calculateWeightAndTarget: function () {
+            dt.assert(false);
+        },
+
+        _buildupEffects: function (effectdatas) {
+            var effects = [];
+            effectdatas.forEach(function (ed) {
+                var effectCls = dt.effectClsMap.getCls(ed.effectcode);
+                var eftIns = new effectCls();
+                eftIns.initWithData(ed);
+                effects.push(eftIns);
+            });
+            this.effects = effects;
         }
     });
 });
