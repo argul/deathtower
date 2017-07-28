@@ -13,7 +13,7 @@ dt.registerClassInheritance('dt.Cls', function () {
             var allunits = this.battleground.getAllUnits();
             this.aiMap = {};
             allunits.forEach(function (x) {
-                self.aiMap[x.unitId()] = new dt.BattleAI_Random(x, self);
+                self.aiMap[x.unitId()] = new dt.BattleAI_PureRandom(x, self);
             });
         },
 

@@ -11,8 +11,7 @@ dt.skilldata.basicAttack = {
         initialCooldown: 0
     },
     effects: [{
-        attr: "patk",
-        powerfactor: 1.0,
-        effectcode: dt.effectcode.PHYSICAL_DAMAGE
+        effectcode: dt.effectcode.PHYSICAL_DAMAGE,
+        powerfactor: 1.0
     }]
 };

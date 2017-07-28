@@ -5,7 +5,7 @@
 dt.registerClassInheritance('dt.EffectInterface', function () {
     dt.Effect_PhysicalDamage = dt.EffectInterface.extend({
         initWithData: function (effectdata) {
-
+            this.powerfactor = effectdata.powerfactor;
         },
 
         affectTarget: function (performer, target) {

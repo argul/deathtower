@@ -3,7 +3,7 @@
  */
 
 dt.registerClassInheritance('dt.BattleAI_Interface', function () {
-    dt.BattleAI_Random = dt.BattleAI_Interface.extend({
+    dt.BattleAI_PureRandom = dt.BattleAI_Interface.extend({
         _doChooseSkill: function (allskills) {
             var rnd = this._abacusRef.rnd;
             return rnd.randomChoice(allskills);
