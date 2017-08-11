@@ -4,11 +4,11 @@
 
 dt.registerClassInheritance('dt.Cls', function () {
     dt.AbacusBattle = dt.Cls.extend({
-        ctor: function (abacusId, teamdata, rnd) {
+        ctor: function (abacusId, teamdata, monsterdata, rnd) {
             var self = this;
             this.abacusId = abacusId;
             this.rnd = rnd;
-            this.battleground = new dt.Battleground(teamdata);
+            this.battleground = new dt.Battleground(teamdata, monsterdata);
 
             var allunits = this.battleground.getAllUnits();
             this.aiMap = {};
@@ -18,11 +18,7 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
 
         tickRound: function () {
-            var roundBehaviors = [];
-            var r = this._willStartOneRound();
-            if (!dt.isUndefined(r)) {
-                roundBehaviors.push(r);
-            }
+            this._willStartOneRound();
 
             var allunits = this.battleground.getAllUnits();
             while (allunits.length > 0) {
@@ -38,15 +34,12 @@ dt.registerClassInheritance('dt.Cls', function () {
                     break;
                 }
 
-                roundBehaviors.push(this._tickUnit(u));
+                this._tickUnit(u);
 
                 allunits = this._removeDeadUnits(allunits);
             }
 
-            var r = this._didFinishOneRound();
-            if (!dt.isUndefined(r)) {
-                roundBehaviors.push(r);
-            }
+            this._didFinishOneRound();
         },
 
         _tickUnit: function (unit) {

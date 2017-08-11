@@ -4,11 +4,22 @@
 
 dt.registerClassInheritance('dt.Cls', function () {
     dt.BattleUnit = dt.Cls.extend({
-        ctor: function (uid, udata) {
+        ctor: function (uid, position, faction, udata) {
             this._dead = false;
             this._uid = uid;
+            this._position = position;
+            this._faction = faction;
             this._skills = [];
+            this._attrs = {};
             this._finalattrs = {};
+        },
+
+        getPosition: function () {
+            return this._position;
+        },
+
+        getFaction: function () {
+            return this._faction;
         },
 
         unitId: function () {

@@ -5,10 +5,16 @@
 dt.registerClassInheritance('dt.Cls', function () {
     dt.BaseSkill = dt.Cls.extend({
         ctor: function (skilldata) {
+            this.skilldata = skilldata;
+            this.targetcode = skilldata.targetcode;
             this.hasCooldown = skilldata.cooldown.hasCooldown;
             this.cooldownRounds = skilldata.cooldown.cooldownRounds;
             this.cooldownLeft = skilldata.cooldown.initialCooldown;
             this._buildupEffects(skilldata.effects);
+        },
+
+        getTargetCode: function () {
+            return this.targetcode;
         },
 
         isInCooldown: function () {
@@ -20,11 +26,14 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
 
         canUse: function () {
-            dt.assert(false);
+            switch (this.targetcode) {
+                default:
+                    return true;
+            }
         },
 
-        calculateWeightAndTarget: function () {
-            dt.assert(false);
+        calculateWeight: function () {
+            return this.skilldata.weight;
         },
 
         _buildupEffects: function (effectdatas) {

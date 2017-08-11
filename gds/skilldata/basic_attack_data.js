@@ -13,5 +13,7 @@ dt.skilldata.basicAttack = {
     effects: [{
         effectcode: dt.effectcode.PHYSICAL_DAMAGE,
         powerfactor: 1.0
-    }]
+    }],
+    targetcode: dt.targetcode.SFFR,
+    weight: 1
 };

@@ -57,7 +57,7 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
 
         foreachTile: function (f) {
-            dt.functional.for2DMatrix(function (idx0, idx1, tile) {
+            dt.suger.for2DMatrix(function (idx0, idx1, tile) {
                 f(idx1, idx0, tile);
             }, this.tiles);
         },
@@ -84,7 +84,7 @@ dt.registerClassInheritance('dt.Cls', function () {
         },
         
         clearDebugDestination: function () {
-            dt.functional.for2DMatrix(function (idx0, idx1, dbgdata) {
+            dt.suger.for2DMatrix(function (idx0, idx1, dbgdata) {
                 dbgdata.destination = undefined;
             }, this.debugdata);
         }

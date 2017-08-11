@@ -108,6 +108,14 @@ dt.suger = {
         return ret;
     },
 
+    for2DMatrix: function (procedure, matrix) {
+        for (var idx0 = 0; idx0 < matrix.length; idx0++) {
+            for (var idx1 = 0; idx1 < matrix[idx0].length; idx1++) {
+                procedure(idx0, idx1, matrix[idx0][idx1]);
+            }
+        }
+    },
+
     getKeys: function (obj) {
         dt.assert(dt.isObject(obj));
         var ret = [];
@@ -116,6 +124,18 @@ dt.suger = {
                 continue;
             }
             ret.push(key);
+        }
+        return ret;
+    },
+
+    getValues: function (obj) {
+        dt.assert(dt.isObject(obj));
+        var ret = [];
+        for (var key in obj) {
+            if (!obj.hasOwnProperty(key)) {
+                continue;
+            }
+            ret.push(obj[key]);
         }
         return ret;
     },
@@ -227,15 +247,5 @@ dt.suger = {
         };
         doCopy(obj, destination);
         return destination;
-    }
-};
-
-dt.functional = {
-    for2DMatrix: function (procedure, matrix) {
-        for (var idx0 = 0; idx0 < matrix.length; idx0++) {
-            for (var idx1 = 0; idx1 < matrix[idx0].length; idx1++) {
-                procedure(idx0, idx1, matrix[idx0][idx1]);
-            }
-        }
     }
 };

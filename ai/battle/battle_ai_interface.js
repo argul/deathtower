@@ -15,22 +15,23 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             allskills = allskills.filter(function (sk) {
                 if (sk.isInCooldown())
                     return false;
-                if (sk.canUse())
+                if (!sk.canUse())
                     return false;
                 return true;
             });
             allskills = allskills.map(function (sk) {
-                var r = sk.calculateWeightAndTarget(self._myUnit, self._abacusRef);
+                var target = dt.targetSeeker.seek(sk.targetcode, self._myUnit, self._abacusRef);
+                var weight = sk.calculateWeight(self._myUnit, self._abacusRef);
                 return {
                     skill: sk,
-                    target: r[0],
-                    weight: r[1]
+                    target: r.target,
+                    weight: r.weight
                 }
             });
             return this._doChooseSkill(allskills);
         },
 
-        _doChooseSkill : function (allskills) {
+        _doChooseSkill: function (allskills) {
             dt.assert(false);
         }
     });
