@@ -9,7 +9,9 @@ dt.registerClassInheritance('dt.EffectInterface', function () {
         },
 
         affectTarget: function (performer, target) {
-            dt.assert(false);
+            //todo: block, critical, dodge
+            var damage = dt.formula.physicalDamage(performer.getFinalAttrs(), target.getFinalAttrs());
+            target.doTakeDamage(damage);
         }
     });
 });

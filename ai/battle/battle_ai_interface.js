@@ -21,11 +21,11 @@ dt.registerClassInheritance('dt.AIInterface', function () {
             });
             allskills = allskills.map(function (sk) {
                 var target = dt.targetSeeker.seek(sk.targetcode, self._myUnit, self._abacusRef);
-                var weight = sk.calculateWeight(self._myUnit, self._abacusRef);
+                var weight = sk.calculateWeight(self._myUnit, self._abacusRef, target);
                 return {
                     skill: sk,
-                    target: r.target,
-                    weight: r.weight
+                    target: target,
+                    weight: weight
                 }
             });
             return this._doChooseSkill(allskills);

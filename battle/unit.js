@@ -10,8 +10,15 @@ dt.registerClassInheritance('dt.Cls', function () {
             this._position = position;
             this._faction = faction;
             this._skills = [];
-            this._attrs = {};
+            this._attrs = {
+                base: new dt.BaseAttr(udata),
+                advanced: new dt.AdvancedAttr(udata)
+            };
             this._finalattrs = {};
+        },
+
+        getFinalAttrs: function () {
+            return this._finalattrs;
         },
 
         getPosition: function () {
@@ -34,12 +41,20 @@ dt.registerClassInheritance('dt.Cls', function () {
             return true;
         },
 
-        allSkills : function () {
+        allSkills: function () {
             return this._skills;
         },
 
         finalAttrs: function () {
             return this._finalattrs;
+        },
+
+        doTakeDamage: function (damage) {
+            var ba = this._finalattrs.base;
+            ba.hp = Math.max(0, ba.hp - damage);
+            if (ba.hp == 0) {
+                this._dead = true;
+            }
         }
     });
 });

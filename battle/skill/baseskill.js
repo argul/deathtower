@@ -32,7 +32,7 @@ dt.registerClassInheritance('dt.Cls', function () {
             }
         },
 
-        calculateWeight: function () {
+        calculateWeight: function (unit, abacusRef, target) {
             return this.skilldata.weight;
         },
 

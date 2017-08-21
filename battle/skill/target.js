@@ -29,11 +29,17 @@ dt.targetSeeker = {
     _seeker_SFFR: function (myUnit, abacusRef) {
         var rnd = abacusRef.rnd;
         var front = abacusRef.battleground.getFactionFrontUnits(!myUnit.getFaction());
+        front = front.filter(function (x) {
+            return !x.isDead();
+        });
         if (front.length > 0){
             return rnd.randomChoice(front);
         }
         else{
             var back = abacusRef.battleground.getFactionBackUnits(!myUnit.getFaction());
+            back = back.filter(function (x) {
+                return !x.isDead();
+            }, front);
             dt.assert(back.length > 0);
             return rnd.randomChoice(back);
         }

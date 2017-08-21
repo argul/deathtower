@@ -3,8 +3,11 @@
  */
 
 dt.formula = {
-    damage: function () {
-        
+    physicalDamage: function (Lattrs, Rattrs, isCritical, isBlock) {
+        //todo: fixme
+        var ret = Lattrs.base.patk - Rattrs.base.pdef;
+        dt.assert(ret >= 0);
+        return ret;
     },
 
     _getPercent: function (pct, min, max) {

@@ -4,7 +4,7 @@
 
 dt.registerClassInheritance('dt.Cls', function () {
     dt.BaseAttr = dt.Cls.extend({
-        ctor: function () {
+        ctor: function (udata) {
             this.hp = 0;//血量
             this.mp = 0;//蓝量
             this.sp = 0;//策略点(回合数,命中,被击)
@@ -22,7 +22,7 @@ dt.registerClassInheritance('dt.Cls', function () {
 
 dt.registerClassInheritance('dt.Cls', function () {
     dt.AdvancedAttr = dt.Cls.extend({
-        ctor: function () {
+        ctor: function (udata) {
             this.critfactor_pct = 0;//暴击伤害
             this.anticrit_pct = 0;//降低被暴击几率
             this.antidebuff_pct = 0;//异常状态抗性
